@@ -94,7 +94,7 @@ function HomePage() {
           </div>
         </div>
       </div>
-      <div className="py-5 md:py-10 ">
+      <div className="py-5 md:py-10 ps-4 ">
         <div className="container px-4 mx-auto">
           <div className="text-2xl md:text-4xl font-bold text-blue-900">
             Shop By Categories
@@ -107,8 +107,8 @@ function HomePage() {
               breakpoints={{
                 500: { slidesPerView: 2 },
                 800: { slidesPerView: 2.5 },
-                1200: { slidesPerView: 3.5 },
-                1308: { slidesPerView: 5 },
+                1200: { slidesPerView: 4.75 },
+                1308: { slidesPerView: 6 },
               }}
               loop={true}
               onSwiper={setSwiper}
@@ -129,12 +129,12 @@ function HomePage() {
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="absolute top-1/2 -left-8 z-10 ">
+            <div className="absolute top-1/2 left-4 z-10 ">
               <button variant="outline" onClick={() => swiper?.slidePrev()}>
                 <FaArrowCircleLeft size={30} />
               </button>
             </div>
-            <div className="absolute top-1/2 -right-9 z-10 ">
+            <div className="absolute top-1/2 right-4 z-10 ">
               <button variant="outline" onClick={() => swiper?.slideNext()}>
                 <FaArrowCircleRight size={30} />
               </button>
