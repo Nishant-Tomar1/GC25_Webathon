@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Erica+One&family=Gasoek+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nosifer&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poetsen+One&family=Poller+One&family=Racing+Sans+One&family=Rowdies:wght@300;400;700&family=Rubik+Wet+Paint&family=Trade+Winds&family=Yatra+One&family=Yeseva+One&display=swap');
+@import "tailwindcss";
+
+*{
+    font-family: 'Montserrat','sans-serif';
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ded5d5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #808080;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1a1a1a;
+}
