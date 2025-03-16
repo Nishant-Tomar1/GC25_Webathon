@@ -23,7 +23,7 @@ const products = [
     id: 2,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_4.png",
     discount: 5,
-    title: "Teddy Bear",
+    title: "TeddyBea adsdddddddddddddddddddd ddddrr",
     rating: 3.5,
     price: 676,
   },
@@ -55,7 +55,7 @@ const products = [
     id: 6,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_4.png",
     discount: 5,
-    title: "Teddy Bear",
+    title: "Teddy Be",
     rating: 3.5,
     price: 676,
   },
@@ -69,14 +69,14 @@ function HomePage() {
       <div class="relative w-full h-64 sm:h-85 md:h-100 lg:h-100 bg-[url(/public/banner.jpg)] bg-cover bg-center">
         <Link
           to="/list"
-          class="absolute hidden md:right-80 sm:block sm:bottom-40 sm:right-55 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-lg transition-all"
+          class="absolute hidden md:right-80 font-semibold sm:block sm:bottom-40 sm:right-55 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
         >
           Get your Groceries now
         </Link>
       </div>
       <div className="py-5 md:py-10 bg-white dark:bg-[#0b1727] text-zinc-900 dark:text-white relative overflow-hidden">
         <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold leading-tight">
+          <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-2">
             Special Offers
           </h2>
           <div className="flex flex-row overflow-x-auto scroll-auto">
@@ -96,7 +96,7 @@ function HomePage() {
       </div>
       <div className="py-5 md:py-10 ">
         <div className="container px-4 mx-auto">
-          <div className="text-3xl md:text-5xl font-bold">
+          <div className="text-2xl md:text-4xl font-bold text-blue-900">
             Shop By Categories
           </div>
           <div className="relative py-3 w-full mx-auto">
