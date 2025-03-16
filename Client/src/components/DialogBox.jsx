@@ -4,7 +4,7 @@ import { useDialog } from "../store/context/DialogContextProvider";
 import logo from "../assets/logo.png"
 import { useNavigate } from "react-router-dom";
 
-const Dialog = ({children}) => {
+const DialogBox = ({children}) => {
   const dialogCtx = useDialog();
   useEffect(()=>{},[dialogCtx])
 
@@ -12,7 +12,7 @@ const Dialog = ({children}) => {
     <div className="relative">
 
       {dialogCtx.open && (
-        <div className="fixed inset-0 bg-trasparent bg-opacity-50 backdrop-brightness-40 flex items-center justify-center z-50 p-2">
+        <div className="fixed inset-0 bg-trasparent bg-opacity-50 backdrop-brightness-40 flex items-center justify-center z-50 ">
           {/* Dialog Box */}
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6">
             {/* Back Button */}
@@ -24,11 +24,11 @@ const Dialog = ({children}) => {
             </button>
             {/* Logo */}
             <div className="flex justify-center mb-4">
-              <img
+              {/* <img
                 src={logo} // Replace with your logo URL
                 alt="Logo"
                 className="w-16"
-              />
+              /> */}
             </div>
             <div>
                 {children}
@@ -40,4 +40,4 @@ const Dialog = ({children}) => {
   );
 };
 
-export default Dialog;
+export default DialogBox;

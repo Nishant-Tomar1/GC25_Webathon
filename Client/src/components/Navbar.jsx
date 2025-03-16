@@ -23,6 +23,8 @@ import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useDialog } from "../store/context/DialogContextProvider";
 import { FaSearch } from "react-icons/fa";
+import Auth from "./Auth";
+import DialogBox from "./DialogBox";
 
 const navigation = {
   categories: [
@@ -471,6 +473,10 @@ export default function Navbar() {
           </div>
         </nav>
       </header>
+
+      <DialogBox>
+        <Auth/>
+      </DialogBox>
     </div>
   );
 }

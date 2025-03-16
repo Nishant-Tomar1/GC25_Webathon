@@ -66,10 +66,10 @@ function HomePage() {
   const dialogCtx = useDialog();
   return (
     <>
-      <div class="relative w-full h-64 sm:h-85 md:h-100 lg:h-100 bg-[url(/public/banner.jpg)] bg-cover bg-center">
+      <div className="relative w-full h-64 sm:h-85 md:h-100 lg:h-100 bg-[url(/public/banner.jpg)] bg-cover bg-center">
         <Link
           to="/list"
-          class="absolute hidden md:right-80 font-semibold sm:block sm:bottom-40 sm:right-55 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
+          className="absolute hidden md:right-80 font-semibold sm:block sm:bottom-40 sm:right-55 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
         >
           Get your Groceries now
         </Link>
