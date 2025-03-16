@@ -7,15 +7,14 @@ import Dialog from '../components/Dialog';
 function Layout() {
   return (
     <>
-      <div className='light'>
-          <ToastContainer/>
-          <Navbar/>
-          <Dialog/>
-          <Outlet/>
-        </div>
-   
+      <div className="w-full h-full light ">
+        <ToastContainer />
+        <Navbar />
+        <Dialog />
+        <Outlet />
+      </div>
     </>
-  )
+  );
 }
 
 export default Layout
