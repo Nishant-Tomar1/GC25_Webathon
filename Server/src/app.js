@@ -15,7 +15,7 @@ app.use(express.urlencoded({
     extended : true,
     limit : "1600kb"
 }))
-// app.use(express.static("build"))
+app.use(express.static("dist"))
 app.use(cookieParser())
 app.use(bodyParser.json())
 

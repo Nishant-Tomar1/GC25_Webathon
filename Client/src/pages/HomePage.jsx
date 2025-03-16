@@ -108,7 +108,7 @@ function HomePage() {
                 500: { slidesPerView: 2 },
                 800: { slidesPerView: 2.5 },
                 1200: { slidesPerView: 4.75 },
-                1308: { slidesPerView: 6 },
+                1308: { slidesPerView: 5.5 },
               }}
               loop={true}
               onSwiper={setSwiper}
