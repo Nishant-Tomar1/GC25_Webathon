@@ -1,6 +1,6 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDialog } from "../store/context/DialogContextProvider";
 import { FaSearch } from "react-icons/fa";
 import Auth from "./Auth";
@@ -17,10 +17,12 @@ import axios from "axios";
 
 export default function Navbar() {
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("")
   const [menu, setMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const dialogCtx = useDialog();
   const loginCtx = useLogin()
+  const navigate = useNavigate();
 
 
   const logoutHandler = async () => {
@@ -45,10 +47,17 @@ export default function Navbar() {
     }
   }
 
+  const handleSearch = ()=>{
+    if (!search){
+      navigate("/")
+    }
+    else navigate(`/search/${search}`);
+  }
+
   return (
     <div className="bg-white">
 
-      <header className="fixed top-0 z-50 w-full bg-white">
+      <header className="fixed top-0 z-30 w-full bg-white">
 
         <nav
           aria-label="Top"
@@ -58,9 +67,9 @@ export default function Navbar() {
             <div className="flex h-16 items-center">
 
               {/* Logo */}
-              <div className="md:flex mr-2 hidden">
+              <div className="flex mr-2 ">
                 <Link to="/">
-                  <img alt="logo" src={logo} className="w-24 " />
+                  <img alt="logo" src={logo} className="w-16 md:w-24 " />
                 </Link>
               </div>
               
@@ -97,19 +106,23 @@ export default function Navbar() {
               </div>
               } */}
 
-              <div className="w-full flex items-center justify-end lg:gap-2 ps-8">
+              <div className="w-full flex items-center justify-end lg:gap-2 ps-2">
+                    <form  onSubmit={(e)=>{e.preventDefault();handleSearch(search)}}>
                   <div className="flex rounded-md lg:ml-6 border-2 mr-3 border-black-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
                     <input
+                      value={search}
+                      onChange={(e)=>{setSearch(e.target.value)}}
                       placeholder="Find Something..."
                       className="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3"
                     />
                     <button
-                      type="button"
+                     type="submit"
                       className="flex items-center justify-center bg-[#fff] px-5"
                     >
                       <FaSearch />
                     </button>
                   </div>
+                    </form>
 
                    {/* Desktop */}
                 {loginCtx.isLoggedIn && 

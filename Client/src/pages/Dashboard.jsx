@@ -49,17 +49,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex h-screen fixed w-full bg-gray-100">
+    <div className="flex h-screen fixed w-full z-60 mt-16 bg-gray-100 ">
       {/* Hamburger Button */}
       <button 
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="absolute top-4 left-4 md:hidden z-50 text-gray-600"
+        className="absolute top-4 left-4 md:hidden z-60 text-gray-600"
       >
         <FaBars size={24} />
       </button>
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-md p-5 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static`}>
+      <div className={`fixed inset-y-0 left-0 z-60 w-64 bg-white shadow-md p-5 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static`}>
         <div className="text-lg font-bold mb-6 text-gray-700">Welcome </div>
         <nav className="space-y-2">
 

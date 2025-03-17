@@ -16,7 +16,7 @@ function ProductCard() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const loginCtx = useLogin()
-
+  
     const createCartEntity = async (productId) => {
       setLoading(true)
       try {
@@ -105,6 +105,7 @@ function ProductCard() {
 
 
   return (
+    <>
     <div className="bg-white flex flex-col justify-evenly p-4 lg:p-6 mt-20  mx-auto md:flex-row ">
       {/* Image Section */}
       <div className="  ">
@@ -202,6 +203,8 @@ function ProductCard() {
         
       </div>
     </div>
+
+  </>
   );
 }
 

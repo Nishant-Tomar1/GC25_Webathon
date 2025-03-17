@@ -99,7 +99,6 @@ function HomePage() {
   }
 
   useEffect(()=>{
-    
     for (let i in Categories){
       fetchProductswithCategory(Categories[i]);
     }
@@ -112,7 +111,7 @@ function HomePage() {
     <>
       <div className="relative w-full mt-16 h-64 sm:h-85 md:h-100 lg:h-100 bg-[url(/public/banner.jpg)] bg-cover bg-center">
         <Link
-          to="/list"
+          to="/search/all"
           className="absolute hidden md:right-80 font-semibold sm:block sm:bottom-46 sm:right-52 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
         >
           Get your Groceries now

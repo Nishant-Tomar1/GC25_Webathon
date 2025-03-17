@@ -57,9 +57,10 @@ const addOrderProduct = async (cartArray, userId) => {
 //     }
 // });
 
-const addorder = async (req,res) =>{
-    const data = req.body;
-    console.log(data);
+const addorder = asyncHandler(
+    async (req,res) =>{
+        const data = req.body;
+        console.log("fdsfsdafkansd", data);
     
     // const userId = req.user?.id;
     // const { code } = req.body;
@@ -85,7 +86,7 @@ const addorder = async (req,res) =>{
             msg:req.body
         }, "Coupon is valid.")
     );
-}
+})
 
 // export const addOrder = async (req, res, next) => {
 
