@@ -28,7 +28,8 @@ const userSchema = new Schema({
         required : [true,"role cannot be empty"]
     },
     loyality : {
-        type :Number
+        type :Number,
+        default:0
     },
     address : [{
         type : String,

@@ -24,6 +24,10 @@ const router = createBrowserRouter(
 
 
 function App() {
+<<<<<<< Updated upstream
+=======
+  
+>>>>>>> Stashed changes
   return (
     <>     
         <RouterProvider router={router}/>

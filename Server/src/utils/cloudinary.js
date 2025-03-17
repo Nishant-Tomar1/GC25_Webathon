@@ -2,6 +2,7 @@ import {v2 as cloudinary} from 'cloudinary';
 import fs from 'fs';
 
 // Cloudinary configuration
+
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
   api_key: process.env.CLOUDINARY_API_KEY, 
@@ -50,4 +51,18 @@ const deleteFileFromCloudinary = async (url) => {
     }
   };
 
-export {uploadOnCloudinary, deleteFileFromCloudinary}
+ const uploadMultipleToCloudinary = async (files, folder = "products") => {
+    try {
+      const uploadPromises = files.map((file) => {
+        return cloudinary.uploader.upload(file.path, { folder });
+      });
+  
+      const results = await Promise.all(uploadPromises);
+      return results.map((result) => result.secure_url);
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw new Error("Failed to upload files");
+    }
+  };
+  
+export {uploadOnCloudinary, deleteFileFromCloudinary ,uploadMultipleToCloudinary}
