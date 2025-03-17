@@ -22,7 +22,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
     let cartItem = await Cart.findOne({ addedBy: userId, product: productId }).select("-createdAt -updatedAt");
 
     if (cartItem) {
-        cartItem.quantity += quantity; 
+        cartItem.quantity += quantity;
     } else {
         cartItem = new Cart({ addedBy: userId, product: productId, quantity });
     }
@@ -33,7 +33,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
 });
 
 const removeItemFromCart = asyncHandler(async (req, res) => {
-    const  productId  = req.params.productId;
+    const productId = req.params.productId;
     const userId = req.user?.id;
 
     if (!productId) {
@@ -51,7 +51,7 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
 
 const updatequatityinCart = asyncHandler(async (req, res) => {
     const productId = req.params.productId;
-    const {quantity} = req.body;
+    const { quantity } = req.body;
     const userId = req.user?.id;
 
     if (!productId || !quantity) {
@@ -64,8 +64,8 @@ const updatequatityinCart = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Item not found in cart.");
     }
 
-    cartItem.quantity+=quantity;
-    if(cartItem.quantity<=0){
+    cartItem.quantity += quantity;
+    if (cartItem.quantity <= 0) {
         const deletedItem = await Cart.findOneAndDelete({ addedBy: userId, product: productId });
         res.status(200).json(new ApiResponse(200, deletedItem, "Item removed from Cart"));
     }
@@ -82,12 +82,12 @@ const getCartByUserID = asyncHandler(async (req, res) => {
     }
 
     const cartItems = await Cart.find({ addedBy: userId }).populate("product", "title price brand stock").select("-createdAt -updatedAt");
-    if(!cartItems){
+    if (!cartItems) {
         throw new ApiError(400, "Error while fetching your cart");
     }
-    if(cartItems.length ===0){
+    if (cartItems.length === 0) {
         res.status(200).json(new ApiResponse(200, {
-            message:"Your cart is empty"
+            message: "Your cart is empty"
         }, "Cart fetched successfully."));
     }
     res.status(200).json(new ApiResponse(200, cartItems, "Cart fetched successfully."));

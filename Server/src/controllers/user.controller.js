@@ -1,14 +1,14 @@
-import { asyncHandler } from  "../utils/asyncHandler.js"
+import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
-import {User} from '../models/user.model.js'
-import  {sendmail}  from './../utils/mails/verifymail.js'
-import {LoginOTP} from './../models/loginotp.js'
+import { User } from '../models/user.model.js'
+import { sendmail } from './../utils/mails/verifymail.js'
+import { LoginOTP } from './../models/loginotp.js'
 import jwt from "jsonwebtoken"
-import { uploadOnCloudinary, deleteFileFromCloudinary } from  "../utils/cloudinary.js"
+import { uploadOnCloudinary, deleteFileFromCloudinary } from "../utils/cloudinary.js"
 const generateTokens = async (userId) => {
     try {
-        
+
         const user = await User.findById(userId);
         if (!user) {
             throw new ApiError(404, "User not found");
@@ -31,42 +31,38 @@ const generateTokens = async (userId) => {
 
 
 
-const registerUser = asyncHandler( 
-    async (req,res) => {
-
-    const{fullName, email, role , contactNumber, address} = req.body
-    // validation -not empty
-    if (
-        [fullName, email, role, contactNumber, address].some((field) => field?.trim()==="")
-    ) {
-        throw new ApiError(400, "All fields are required")
-    }
-    // check if user already exists : username. email
-    const ExistedUser = await User.findOne({
-        $or: [{ email }]
-    })
-    if (ExistedUser) {
-        throw new ApiError(409, "User with this email or username already exists")
-    }
-    // create user object - create entry in db 
-    const user = await User.create({
-        fullName, 
-        email : email.toLowerCase(),
-        contactNumber,
-        role,
+const registerUser = asyncHandler(
+    async (req, res) => {
+    
+        const { fullName, email, role, contactNumber, address } = req.body
+        if (
+            [fullName, email, role, contactNumber, address].some((field) => field?.trim() === "")
+        ) {
+            throw new ApiError(400, "All fields are required")
+        }
+        const ExistedUser = await User.findOne({
+            $or: [{ email }]
+        })
+        if (ExistedUser) {
+            throw new ApiError(409, "User with this email or username already exists")
+        }
+        const user = await User.create({
+            fullName,
+            email: email.toLowerCase(),
+            contactNumber,
+            role,
         address
-    })
-    // remove password and refresh token field from response
-    const createdUser = await User.findById(user._id).select(
-        "-Token"
-    )
-    if (!createdUser) { 
-        throw new ApiError(500, "Something went wrong during user registration" )
+        })
+        const createdUser = await User.findById(user._id).select(
+            "-Token"
+        )
+        if (!createdUser) {
+            throw new ApiError(500, "Something went wrong during user registration")
+        }
+        return res.status(201).json(
+            new ApiResponse(200, createdUser, "User registered successfully")
+        )
     }
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered successfully")
-    )   
-}
 )
 
 const generateOPTloginUser = asyncHandler(
@@ -99,44 +95,44 @@ const generateOPTloginUser = asyncHandler(
         }
         
         return res.status(201).json(
-            new ApiResponse(200,{
-                message : "OTP sent successfully"
+            new ApiResponse(200, {
+                message: "OTP sent successfully"
             }, "OTP sent successfully")
         );
     }
 );
 
 const logoutUser = asyncHandler(
-    async(req, res) => {
-        
-         await User.findByIdAndUpdate(
+    async (req, res) => {
+
+        await User.findByIdAndUpdate(
             req.user._id,
             {
                 $unset: {
-                    Token : 1 
+                    Token: 1
                 }
             },
             {
-                new : true  
+                new: true
             }
         )
         // console.log(user);
 
         const options = {
             // httpOnly : true,
-            secure : true
+            secure: true
         }
 
         return res
-        .status(200)
-        .clearCookie("Token", options)
-        .json(
-            new ApiResponse(
-                200,
-                {},
-                "User logged Out Successfully"
+            .status(200)
+            .clearCookie("Token", options)
+            .json(
+                new ApiResponse(
+                    200,
+                    {},
+                    "User logged Out Successfully"
+                )
             )
-        )
 
     }
 )
@@ -154,213 +150,202 @@ const verifyOTP = asyncHandler(
         if (!otpRecord) {
             throw new ApiError(400, "Wrong OTP");
         }
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(200).json(new ApiResponse(400, {email}, "User does not exist in database"))
-        }
-
-        const {Token} = await generateTokens(user._id);
+        const {Token} = await generateTokens(loggedInUser._id);
         // Optional: Clean up the OTP record after successful verification
         // await LoginOTP.findByIdAndDelete(otpRecord._id);
         console.log(Token);
         return res.status(200).json(
-            new ApiResponse(200, {user,Token}
+            new ApiResponse(200, {loggedInUser,Token}
                 , "Login successful")
         );
     }
 );
 
-const getAllUserEmails =  asyncHandler(
-    async(req,res) => {
+const getAllUserEmails = asyncHandler(
+    async (req, res) => {
         const prevUsers = await User.aggregate([
             {
-                $match : {}
+                $match: {}
             },
             {
-                $project : {
-                    email : 1,
+                $project: {
+                    email: 1,
                 }
             }
         ])
 
-        if (!prevUsers){
+        if (!prevUsers) {
             throw new ApiError(500, "Could not fetch Previous Users data!")
         }
 
         return res
-        .status(200)
-        .json(
-            new ApiResponse(200, prevUsers, "Fetched Successfully")
-        )
+            .status(200)
+            .json(
+                new ApiResponse(200, prevUsers, "Fetched Successfully")
+            )
     }
 )
 const getcurUserdetails = asyncHandler(
-    async(req,res)=>{
+    async (req, res) => {
         const curUser = await User.findById(req.user._id).select(
             "-Token"
         );
-        if(!curUser){
+        if (!curUser) {
             throw new ApiError(500, "Could not fetch Users data!")
         }
         return res
-        .status(200)
-        .json(
-            new ApiResponse(200, curUser, "Fetched Successfully")
-        )
+            .status(200)
+            .json(
+                new ApiResponse(200, curUser, "Fetched Successfully")
+            )
     }
 )
 const getUserbyID = asyncHandler(
     async(req,res)=>{
-        console.log(req.params.UserID);
-        
         const curUser = await User.findById(req.params.UserID).select(
             "-Token"
         );
-        
         if(!curUser){
             throw new ApiError(500, "Could not fetch Users data!")
         }
         return res
-        .status(200)
-        .json(
-            new ApiResponse(200, curUser, "Fetched Successfully")
-        )
+            .status(200)
+            .json(
+                new ApiResponse(200, curUser, "Fetched Successfully")
+            )
     }
 )
 
 const updateAccountDetails = asyncHandler(
-    async(req,res) =>  {
-        const {fullName, email, contactNumber} = req.body; 
+    async (req, res) => {
+        const { fullName, email, contactNumber } = req.body;
 
-        if (!fullName || !email || !contactNumber){
+        if (!fullName || !email || !contactNumber) {
             throw new ApiError(401, "All fields are required (fullname and email)")
         }
 
-        // check if user already exists with this email
         const ExistedUser = await User.findOne({
-            email : email
+            email: email
         })
 
-        // console.log(ExistedUser);
         if (ExistedUser && (String(ExistedUser._id) !== String(req.user._id))) {
-            if(ExistedUser.email===email ) throw new ApiResponse(409,{}, "User with this email already exists");
+            if (ExistedUser.email === email) throw new ApiResponse(409, {}, "User with this email already exists");
         }
 
         await User.findByIdAndUpdate(
             req.user?._id,
             {
-                $set : {
+                $set: {
                     fullName,
-                    email : email, //both are similar
+                    email: email,
                     contactNumber
                 }
             },
             {
-                new : true
-            }           
-            )
-        
+                new: true
+            }
+        )
+
         const updatedUser = await User.findById(req.user._id).select("-password -createdAt -updatedAt")
 
         // console.log(updatedUser);
-            return res
+        return res
             .status(200)
             .json(
                 new ApiResponse(
-                200,
-                updatedUser,
-                "Account details updated Succesfully"
-            ))
+                    200,
+                    updatedUser,
+                    "Account details updated Succesfully"
+                ))
     }
 )
 
 const updateUserProfilePicture = asyncHandler(
-    async (req,res) => {
-        const profilePictureLocalPath =  req.file?.path;
-        console.log(profilePictureLocalPath );
-        if(!profilePictureLocalPath){
+    async (req, res) => {
+        const profilePictureLocalPath = req.file?.path;
+        console.log(profilePictureLocalPath);
+        if (!profilePictureLocalPath) {
             throw new ApiError(400, "Profile Picture file is missing")
         }
-        
+
         const profilePicture = await uploadOnCloudinary(profilePictureLocalPath);
-        console.log("xdsfg" , profilePicture)
-        if (!profilePicture.url){
-            throw new ApiError(400,"Error while uploading profilePicture")
+        console.log("xdsfg", profilePicture)
+        if (!profilePicture.url) {
+            throw new ApiError(400, "Error while uploading profilePicture")
         }
-        
+
         await User.findByIdAndUpdate(
             req?.user._id,
             {
-                $set:{
-                    profilePicture:profilePicture.url
+                $set: {
+                    profilePicture: profilePicture.url
                 }
             },
-            {new:true}
+            { new: true }
         )
-        
-        if(req.user.profilePicture){
-            await deleteFileFromCloudinary(req.user.profilePicture); //delete the old profilePicture
+
+        if (req.user.profilePicture) {
+            await deleteFileFromCloudinary(req.user.profilePicture); 
         }
-        
+
         const user = await User.findById(req.user._id).select("-password")
-        
+
         return res
-        .status(200)
-        .json(new ApiResponse(
-            200,
-            user,
-            "User ProfilePicture Updated Successfully"
-        ))
+            .status(200)
+            .json(new ApiResponse(
+                200,
+                user,
+                "User ProfilePicture Updated Successfully"
+            ))
     }
 )
 const verifyToken = asyncHandler(
-    async (req,res) => {
-            try {
-                let incomingRefreshToken;
+    async (req, res) => {
+        try {
+            let incomingRefreshToken;
             if (
                 req.headers.authorization &&
                 req.headers.authorization.startsWith("Bearer")
-            ) { 
+            ) {
                 incomingRefreshToken = req.headers.authorization.split(" ")[1];
             }
             else incomingRefreshToken = req.cookies?.Token
 
-            if (!incomingRefreshToken){
+            if (!incomingRefreshToken) {
                 throw new ApiError(401, "Unauthorized Request")
             }
             const decodedRefreshToken = jwt.verify(incomingRefreshToken, process.env.TOKEN_SECRET);
             console.log(decodedRefreshToken);
 
             const user = await User.findById(decodedRefreshToken.id)
-            
+
             console.log(user.Token);
-            
-            if (!user){
+
+            if (!user) {
                 throw new ApiError(401, "Invalid Token");
             }
-            
+            console.log("sdfv")
             const {Token : newToken} = await generateTokens(user._id);
             const loggeduser = await User.findById(decodedRefreshToken.id)
             const options = {
                 // httpOnly : true,
-                secure : true
+                secure: true
             }
             // console.log(newUser, newAccessToken, newRefreshToken);
             return res
-            .status(200)
-            .cookie("Token", newToken, options)
-            .json(
-                new ApiResponse(
-                200, {
-                    Token : newToken,
-                    user: loggeduser
-                },
-                "Token Refreshed"
+                .status(200)
+                .cookie("Token", newToken, options)
+                .json(
+                    new ApiResponse(
+                        200, {
+                        Token: newToken,
+                        user: loggeduser
+                    },
+                        "Token Refreshed"
+                    )
                 )
-            )
         } catch (error) {
-            throw new ApiError(401 ,  "Invalid token ")
+            throw new ApiError(401, "Invalid token ")
         }
     }
 )

@@ -29,7 +29,7 @@ import orderRoute from './routes/order.routes.js';
 import cartRoute from './routes/Cart.routes.js';
 import ratingRoute from "./routes/rating.routes.js";
 import reviewRoute from "./routes/review.routes.js";
-
+import couponRoute from "./routes/coupon.routes.js";
 
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/product", prodRoute)
@@ -37,6 +37,6 @@ app.use("/api/v1/order",orderRoute)
 app.use("/api/v1/cart", cartRoute)
 app.use("/api/v1/rating", ratingRoute)
 app.use("/api/v1/review",reviewRoute)
-
+app.use("/api/v1/coupon",couponRoute)
 
 export {app}
