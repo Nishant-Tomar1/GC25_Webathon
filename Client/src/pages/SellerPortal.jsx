@@ -1,58 +1,136 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Server } from "../Constants.jsx";
+import { useLogin } from "../store/context/LoginContextProvider";
 import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
+import { Product } from "../../../Server/src/models/product.model.js";
 
 function SellerPortal() {
   const [products, setProducts] = useState([
-    { 
-      id: 1, 
-      title: "Apples", 
-      description: "Fresh red apples", 
-      price: 2.5, 
-      category: "Groceries", 
-      images: ["apple.jpg"], 
-      seller: "12345", 
-      stock: 50, 
-      discount: 5, 
-      ratings: [], 
-      reviews: []
-    },
-    { 
-      id: 2, 
-      title: "Bananas", 
-      description: "Organic bananas", 
-      price: 1.2, 
-      category: "Groceries", 
-      images: ["banana.jpg"], 
-      seller: "67890", 
-      stock: 30, 
-      discount: 0, 
-      ratings: [], 
-      reviews: []
-    }
+    { title: "", stock: "", price: "", category: "" },
   ]);
-  const [form, setForm] = useState({ id: null, title: "", description: "", price: "", category: "", images: [], seller: "", stock: "", discount: "", ratings: [], reviews: [] });
+  const loginCtx = useLogin();
+  // console.log(loginCtx.user);
+ const [newProductID,setNewProductID] = useState("");
+ const [form , setform ]  = useState(true);
+  useEffect(async ()=>{
+    const res = await axios.post(
+      `${Server}/product/getproductsbyid`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("Token"),
+        },
+      }
+      
+    );
+    console.log(res.data);
+    setProducts(res.data.data.products);
+  },[])
+
+
+  const [newProduct, setNewProduct] = useState({
+    title: "",
+    description: "",
+    brand: "",
+    price: "",
+    category: "",
+    images: [],
+    seller: loginCtx.user,
+    stock: "",
+    discount: "",
+  });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.id) {
-      setProducts(
-        products.map((product) =>
-          product.id === form.id ? { ...form, price: parseFloat(form.price), stock: parseInt(form.stock) } : product
-        )
-      );
-    } else {
-      setProducts([...products, { ...form, id: Date.now(), price: parseFloat(form.price), stock: parseInt(form.stock) }]);
+    for (const key in newProduct) {
+      if (newProduct[key] === "") {
+        console.log("warning", `${key} is required!`);
+        return;
+      }
     }
-    setForm({ id: null, title: "", description: "", brand: "", price: "", category: "", images: [], seller: "", stock: "", discount: "", ratings: [], reviews: [] });
+    if (newProduct.price < 50 || newProduct.price > 50000) {
+      console.log("warning", `Price must be between 50 to 50000`);
+      return;
+    }
+    const file1 = document.getElementById("image").files[0];
+    console.log(newProduct);
+    try {
+      // loadingCtx.setLoading(true);
+      const formData = new FormData();
+      for (const key in newProduct) {
+        formData.append(key, newProduct[key]);
+      }
+      formData.append("images", file1);
+      let res;
+      if(form){
+        res = await axios.post(`${Server}/product/addproduct`, formData, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("Token"),
+          },
+        });
+      }
+      else{
+         res = await axios.patch(
+          `${Server}/product/updateproductdetails/${newProductID}`,
+          formData,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("Token"),
+            },
+          }
+        );
+      }
+
+
+      const formData2 = new FormData();
+      formData2.append("images",file1);
+      if(res.data.statusCode === 200) {
+        const res2 = await axios.patch(
+          `${Server}/product/addproductimages/${res.data.data._id}`,
+          formData2,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: "Bearer " + localStorage.getItem("Token"),
+            },
+          }
+        );
+        for (var key of formData.entries()) {
+          console.log(key[0] + ", " + key[1]);
+        }
+
+         console.log(res2);
+         setform(true);
+         setNewProduct((prev) => ({
+           ...prev,
+           title: "",
+           description: "",
+           brand: "",
+           price: "",
+           category: "",
+           images: [],
+           seller: loginCtx.user,
+           stock: "",
+           discount: "",
+         }));
+      }
+    } catch (error) {
+      console.log(error);
+      // loadingCtx.setLoading(false);
+      // alertCtx.setToast("error", "Something went wrong");
+    }
   };
 
   const handleEdit = (product) => {
-    setForm(product);
+    setNewProductID(product._id);
+    setNewProduct(product);
+    setform(false);
   };
 
   const handleDelete = (id) => {
@@ -66,7 +144,7 @@ function SellerPortal() {
       {/* Product Form */}
       <div className="p-4 mb-6 border rounded-lg shadow">
         <h2 className="text-xl text-center font-semibold mb-2">
-          {form.id ? "Edit Product" : "Add Product"}
+          {/* {form.id ? "Edit Product" : "Add Product"} */}
         </h2>
         <form onSubmit={handleSubmit} className="grid gap-1">
           <div className="mb-2">
@@ -77,7 +155,7 @@ function SellerPortal() {
               type="text"
               name="title"
               placeholder="Whole Grain Brown Bread"
-              value={form.title}
+              value={newProduct.title}
               onChange={handleChange}
               required
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
@@ -92,7 +170,22 @@ function SellerPortal() {
               type="text"
               name="description"
               placeholder="Soft, fresh, and made with 100% whole grains, this brown bread is a healthy choice for your daily meals."
-              value={form.description}
+              value={newProduct.description}
+              onChange={handleChange}
+              required
+              className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
+            />
+          </div>
+
+          <div className="mb-2">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              Brand
+            </label>
+            <input
+              type="text"
+              name="brand"
+              placeholder="Amul"
+              value={newProduct.brand}
               onChange={handleChange}
               required
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
@@ -107,7 +200,7 @@ function SellerPortal() {
               type="number"
               name="price"
               placeholder="50"
-              value={form.price}
+              value={newProduct.price}
               onChange={handleChange}
               required
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
@@ -122,7 +215,7 @@ function SellerPortal() {
               type="text"
               name="category"
               placeholder="Apparel"
-              value={form.category}
+              value={newProduct.category}
               onChange={handleChange}
               required
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
@@ -134,6 +227,7 @@ function SellerPortal() {
               Product Image
             </label>
             <input
+              id="image"
               type="file"
               accept="image/*"
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-gray-300 file:bg-gray-100 file:text-gray-600 cursor-pointer"
@@ -148,7 +242,7 @@ function SellerPortal() {
               type="number"
               name="stock"
               placeholder="5"
-              value={form.stock}
+              value={newProduct.stock}
               onChange={handleChange}
               required
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
@@ -163,7 +257,7 @@ function SellerPortal() {
               type="number"
               name="discount"
               placeholder="5%"
-              value={form.discount}
+              value={newProduct.discount}
               onChange={handleChange}
               className="w-full border text-sm border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
             />
@@ -173,12 +267,13 @@ function SellerPortal() {
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
           >
-            {form.id ? "Update Product" : "Add Product"}
+            {!form ? "Update Product" : "Add Product"}
           </button>
         </form>
       </div>
 
       {/* Product List */}
+      
       <table className="w-full border">
         <thead>
           <tr className="bg-gray-200">
@@ -191,9 +286,9 @@ function SellerPortal() {
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product.id} className="border-t">
+            <tr key={product._id} className="border-t">
               <td className="p-2">{product.title}</td>
-              <td className="p-2">{product.price.toFixed(2)}</td>
+              <td className="p-2">{product.price}</td>
               <td className="p-2">{product.category}</td>
               <td className="p-2">{product.stock}</td>
               <td className="p-2 flex gap-2">

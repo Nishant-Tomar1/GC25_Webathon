@@ -6,11 +6,13 @@ import { deleteFileFromCloudinary ,uploadMultipleToCloudinary } from "../utils/c
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Cart } from './../models/cart.model.js'
 import { console } from "inspector";
+import { log } from "console";
 
 const addProductImage = asyncHandler(
     async (req, res) => {
         const prodID = req.params.prodID; 
         console.log(prodID);
+        console.log(req.files);
         
         const owner = await User.findById(req.user.id).select("role fullName profilePicture ");
         if (!owner) {
@@ -162,9 +164,32 @@ const getProducts = asyncHandler(
     }
 );
 
+
+const getProductsById = asyncHandler(async (req, res) => {
+  try {
+    const query = req.user?.id;
+    console.log("asm",query)
+    const products = await Product.find({seller : query})
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          products
+        },
+        "Products fetched successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw new ApiError(500, "Something went wrong while fetching products");
+  }
+});
+
 const updateProductDetails = asyncHandler(async (req, res) => {
 
     const prodID = req.params.prodID;
+    console.log(req.body);
+    
     const { title, description, price, category, brand, stock } = req.body;
     // console.log(title, description, price, category, brand, stock,prodID)
     if (!title || !description || !price || !category || !brand || !stock) {
@@ -245,9 +270,10 @@ const deleteProduct = asyncHandler(    // postman check remaining   (check after
     }
 )
 export {
-    addProduct,
-    getProducts,
-    updateProductDetails,
-    deleteProduct,
-    addProductImage
-}
+  addProduct,
+  getProducts,
+  updateProductDetails,
+  deleteProduct,
+  addProductImage,
+  getProductsById,
+};
