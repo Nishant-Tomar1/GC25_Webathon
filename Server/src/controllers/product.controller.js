@@ -237,7 +237,8 @@ const updateProductDetails = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(    // postman check remaining   (check after implement cart)   
     async (req, res) => {
-        const { id: productId } = req.params
+        const productId = req.params.prodID;
+        
         if (!productId) {
             throw new ApiError(500, "Product id is required")
         }

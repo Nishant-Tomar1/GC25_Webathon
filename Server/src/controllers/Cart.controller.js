@@ -83,8 +83,10 @@ const getCartByUserID = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User ID is required.");
     }
 
-    const cartItems = await Cart.find({ addedBy: userId }).populate("product", "title price brand stock").select("-createdAt -updatedAt");
-    if (!cartItems) {
+    const cartItems = await Cart.find({ addedBy: userId })
+      .populate("product", "title price brand stock description images discount")
+      .select("-createdAt -updatedAt");
+    if (!cartItems) { 
         throw new ApiError(400, "Error while fetching your cart");
     }
     if (cartItems.length === 0) {
