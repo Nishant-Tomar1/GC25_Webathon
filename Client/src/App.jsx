@@ -4,8 +4,6 @@ import HomePage from "./pages/HomePage"
 import { RouterProvider } from "react-router-dom"
 import { createBrowserRouter, createRoutesFromElements } from "react-router-dom"
 import ErrorPage from "./pages/ErrorPage"
-import OrderHistory from "./pages/OrderHistory"
-import SellerPortal from "./pages/SellerPortal"
 import ProductCard from "./pages/productPage"
 import Dashboard from "./pages/Dashboard"
 import { useEffect } from "react"
@@ -17,12 +15,12 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route index element={<HomePage />} />
-      <Route path="/orderhistory" element={<OrderHistory />} />
       <Route path="/product/:productId" element={<ProductCard />} />
       <Route path="/notifications/:userId" element={<Dashboard />} />
       <Route path="/profile/:userId" element={<Dashboard/>} />
       <Route path="/orders/:userId" element={<Dashboard/>} />
       <Route path="/cart/:userId" element={<Dashboard/>} />
+      <Route path="/manageorders/:userId" element={<Dashboard/>} />
       <Route path="/manageproducts/:userId" element={<Dashboard/>} />
       <Route path="/managecoupons/:userId" element={<Dashboard/>} />
       <Route path="*" element={<ErrorPage />} />

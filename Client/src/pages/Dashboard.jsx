@@ -78,9 +78,9 @@ const Dashboard = () => {
             <>
               <Link className={`flex items-center gap-5 w-full justify-between py-2 px-6 rounded-lg ${path==="manageorders" && "bg-gray-200"}`} to={`/manageorders/${loginCtx.user?._id}`}  > Manage Orders  <MdContentPaste/> </Link>
 
-              <Link className={`flex items-center gap-5 w-full justify-between py-2 px-4 rounded-lg ${path==="manageproduct" && "bg-gray-200"}`} to={`/manageproducts/${loginCtx.user?._id}`}  > Manage Products  <FaShoppingBag/> </Link>
+              <Link className={`flex items-center gap-5 w-full justify-between py-2 px-4 rounded-lg ${path==="manageproducts" && "bg-gray-200"}`} to={`/manageproducts/${loginCtx.user?._id}`}  > Manage Products  <FaShoppingBag/> </Link>
 
-              <Link className={`flex items-center gap-5 w-full justify-between py-2 px-4 rounded-lg ${path==="managecoupons" && "bg-gray-200"}`} to={`/mamagecoupons/${loginCtx.user?._id}`}  > Manage Coupons  <BiSolidOffer/> </Link>
+              <Link className={`flex items-center gap-5 w-full justify-between py-2 px-4 rounded-lg ${path==="managecoupons" && "bg-gray-200"}`} to={`/managecoupons/${loginCtx.user?._id}`}  > Manage Coupons  <BiSolidOffer/> </Link>
 
             </>
 
@@ -101,13 +101,13 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 pt-20 p-6 max-h-[100vh] overflow-auto">
-        {path === 'profile' && <Profile/>}
-        {path === 'orders' && <Orders/>}
-        {path === 'cart' && <Cart/>}
-        {path === 'notifications' && <Notifications/>}
-        {path === 'manageorders' && <SellerOrders/>}
-        {path === 'manageproducts' && <SellerProducts/>}
-        {path === 'managecoupons' && <SellerCoupons/>}
+        {path === 'profile' && <Profile userId={userId}/>}
+        {path === 'orders' && <Orders userId={userId}/>}
+        {path === 'cart' && <Cart userId={userId}/>}
+        {path === 'notifications' && <Notifications userId={userId}/>}
+        {path === 'manageorders' && <SellerOrders userId={userId}/>}
+        {path === 'manageproducts' && <SellerProducts userId={userId}/>}
+        {path === 'managecoupons' && <SellerCoupons userId={userId}/>}
       </div>
     </div>
   );

@@ -74,7 +74,6 @@ const generateOPTloginUser = asyncHandler(
         }
         
         const user = await User.findOne({ email });
-
         
         const OTP = Math.floor(100000 + Math.random() * 900000);
         console.log("Generated OTP:", OTP);
@@ -150,12 +149,18 @@ const verifyOTP = asyncHandler(
         if (!otpRecord) {
             throw new ApiError(400, "Wrong OTP");
         }
-        const {Token} = await generateTokens(loggedInUser._id);
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(200).json(new ApiResponse(400, {email}, "User does not exist in database"))
+        }
+
+        const {Token} = await generateTokens(user._id);
         // Optional: Clean up the OTP record after successful verification
         // await LoginOTP.findByIdAndDelete(otpRecord._id);
         console.log(Token);
         return res.status(200).json(
-            new ApiResponse(200, {loggedInUser,Token}
+            new ApiResponse(200, {user,Token}
                 , "Login successful")
         );
     }

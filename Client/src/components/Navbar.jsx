@@ -113,7 +113,7 @@ export default function Navbar() {
 
                    {/* Desktop */}
                 {loginCtx.isLoggedIn && 
-                <div className="md:flex mr-3 hidden">
+                <div className="flex mr-3 ">
                 <button onClick={()=>{setMenu(!menu)}}>
                   {loginCtx.user?.profilePicture ? (
                                                   <img
@@ -129,9 +129,9 @@ export default function Navbar() {
                         <div className="absolute top-full right-10 2xl:right-36 w-[200px] max-h-40 overflow-y-auto z-30 bg-white border border-gray-300 rounded-md shadow-lg">
                           <div className="p-4">
                             <ul className="text-sm text-gray-600 space-y-2 flex flex-col pb-1">
-                              <li> <Link to={`/profile/${loginCtx.user?._id}`} >My Profile.</Link>  </li>
-                              { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders.</Link>  </li>}
-                              <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats.</Link>  </li>
+                              <li> <Link to={`/profile/${loginCtx.user?._id}`} >My Profile</Link>  </li>
+                              { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders</Link>  </li>}
+                              <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats</Link>  </li>
                             </ul>
                             <button onClick={logoutHandler} className="text-red-600 cursor-pointer text-md font-semibold">{loading ? "loading.." : "Logout"}</button>
                           </div>
