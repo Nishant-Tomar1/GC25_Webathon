@@ -6,6 +6,7 @@ import { deleteFileFromCloudinary, uploadMultipleToCloudinary } from "../utils/c
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Order } from './../models/order.model.js'
 import { console } from "inspector";
+import { log } from "console";
 
 
 const addOrderProduct = async (cartArray, userId) => {
@@ -57,7 +58,9 @@ const addOrderProduct = async (cartArray, userId) => {
 // });
 
 const addorder = async (req,res) =>{
-    console.log(req.body)
+    const data = req.body;
+    console.log(data);
+    
     // const userId = req.user?.id;
     // const { code } = req.body;
 
@@ -79,7 +82,7 @@ const addorder = async (req,res) =>{
     // }
     res.status(200).json(
         new ApiResponse(200, { 
-            msg:true
+            msg:req.body
         }, "Coupon is valid.")
     );
 }
