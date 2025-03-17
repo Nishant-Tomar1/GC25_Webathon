@@ -7,7 +7,7 @@ import { Rating } from "../models/rating.model.js";
 
 const addOrUpdateProductRating = asyncHandler(async (req, res) => {
     const productId = req.params.productId;
-    const {value } = req.body;
+    const { value } = req.body;
     const userId = req.user?.id;
 
     if (!productId || value < 1 || value > 5) {
@@ -49,7 +49,7 @@ const deleteProductRating = asyncHandler(async (req, res) => {
 });
 
 const getProductRating = asyncHandler(async (req, res) => {
-    const  productId  = req.params.productId;
+    const productId = req.params.productId;
 
     if (!productId) {
         throw new ApiError(400, "Product ID is required.");
@@ -77,12 +77,12 @@ const getRatingByUser = asyncHandler(async (req, res) => {
     }
 
     const userRatings = await Rating.find({ evaluator: userId }).populate("product", "title brand price");
-    if(!userRatings){
+    if (!userRatings) {
         throw new ApiError(400, "Error during fetching your ratings");
     }
-    if(userRatings.length===0){
+    if (userRatings.length === 0) {
         res.status(200).json(new ApiResponse(200, {
-            message:"No rating given yet"
+            message: "No rating given yet"
         }, "User ratings fetched successfully."));
     }
     res.status(200).json(new ApiResponse(200, userRatings, "User ratings fetched successfully."));

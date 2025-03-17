@@ -85,7 +85,7 @@ function Auth() {
                 loginCtx.login(res.data.data.user);
                 localStorage.setItem("Token",res.data.data.Token);
                 setEmail(res.data?.data?.loggedInUser?.email)
-                toast.success(`Welcome ${res.data?.data?.user?.fullName}`);
+                toast.success(`Welcome back, ${res.data?.data?.user?.fullName}`);
                 dialogCtx.setDialog(false);
             }
             setLoading(false)

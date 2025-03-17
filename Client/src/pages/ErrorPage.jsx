@@ -7,7 +7,7 @@ const ErrorPage = () => {
       {/* Logo */}
       <div className="flex items-center mb-6">
         <img
-          src={logo} // Replace with GETIT logo URL
+          src={logo}
           alt="Logo"
           className="w-32"
         />

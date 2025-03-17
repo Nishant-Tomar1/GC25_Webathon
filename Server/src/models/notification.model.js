@@ -15,7 +15,8 @@ const notificationSchema = new Schema({
   status : {
     type : String,
     enum : ["unseen","seen"],
+    default:"unseen"
   }
 },{timestamps : true});
 
-export const Review = mongoose.model('Notification', notificationSchema);
+export const Notification = mongoose.model('Notification', notificationSchema);

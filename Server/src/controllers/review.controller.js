@@ -6,7 +6,7 @@ import { Review } from "../models/review.model.js";
 
 const addOrUpdateProductReview = asyncHandler(async (req, res) => {
     const productId = req.params.productId;
-    const {comment} = req.body;
+    const { comment } = req.body;
     const userId = req.user?.id;
 
     if (!productId || !comment) {
@@ -43,11 +43,11 @@ const deleteProductReview = asyncHandler(async (req, res) => {
     if (!deletedReview) {
         throw new ApiError(404, "Review not found.");
     }
-    res.status(200).json(new ApiResponse(200, {deletedReview}, "review deleted successfully."));
+    res.status(200).json(new ApiResponse(200, { deletedReview }, "review deleted successfully."));
 });
 
 const getProductReview = asyncHandler(async (req, res) => {
-    const  productId  = req.params.productId;
+    const productId = req.params.productId;
 
     if (!productId) {
         throw new ApiError(400, "Product ID is required.");
@@ -61,7 +61,7 @@ const getProductReview = asyncHandler(async (req, res) => {
     const reviews = await Review.find({ product: productId }).populate("reviewer", "fullName");
 
     res.status(200).json(
-        new ApiResponse(200, reviews , "Product reviews fetched successfully.")
+        new ApiResponse(200, reviews, "Product reviews fetched successfully.")
     );
 });
 
@@ -71,14 +71,14 @@ const getReviewByUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User ID is required.");
     }
     console.log(userId);
-    
+
     const userReviews = await Review.find({ reviewer: userId }).populate("product", "title brand price");
-    if(!userReviews){
+    if (!userReviews) {
         throw new ApiError(400, "Error during fetching your reviews");
     }
-    if(userReviews.length===0){
+    if (userReviews.length === 0) {
         res.status(200).json(new ApiResponse(200, {
-            message:"No review given yet"
+            message: "No review given yet"
         }, "User reviews fetched successfully."));
     }
     res.status(200).json(new ApiResponse(200, userReviews, "User reviews fetched successfully."));
