@@ -13,7 +13,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Server } from "../Constants";
 import axios from "axios";
-import Loader from "./Loader";
 
 
 export default function Navbar() {
@@ -34,6 +33,7 @@ export default function Navbar() {
       }}
     )
       if (res.data.statusCode === 200){
+        setMenu(false)
         loginCtx.logout();
       }
       toast.success("Logged Out Successfully")
@@ -41,14 +41,14 @@ export default function Navbar() {
     } catch (error) {
       console.log(error);
       setLoading(false)
-      toast.success("Somthing went wrong! Try again")
+      toast.error("Somthing went wrong! Try again")
     }
   }
 
   return (
     <div className="bg-white">
 
-      <header className="relative bg-white">
+      <header className="fixed top-0 z-50 w-full bg-white">
 
         <nav
           aria-label="Top"
@@ -58,9 +58,9 @@ export default function Navbar() {
             <div className="flex h-16 items-center">
 
               {/* Logo */}
-              <div className="lg:flex mr-2 hidden">
+              <div className="md:flex mr-2 hidden">
                 <Link to="/">
-                  <img alt="logo" src={logo} className="w-16 lg:w-24 " />
+                  <img alt="logo" src={logo} className="w-24 " />
                 </Link>
               </div>
               
@@ -68,7 +68,7 @@ export default function Navbar() {
 
                 {/* Mobile */}
                 {loginCtx.isLoggedIn && 
-                <div className="flex lg:hidden mr-3 ">
+                <div className="hidden mr-3">
                 <button onClick={()=>{setMenu(!menu)}}>
                   {loginCtx.user?.profilePicture ? (
                                                   <img
@@ -97,7 +97,7 @@ export default function Navbar() {
               </div>
               }
 
-              <div className="w-full flex items-center justify-end lg:gap-2">
+              <div className="w-full flex items-center justify-end lg:gap-2 ps-8">
                   <div className="flex rounded-md lg:ml-6 border-2 mr-3 border-black-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
                     <input
                       placeholder="Find Something..."
@@ -113,7 +113,7 @@ export default function Navbar() {
 
                    {/* Desktop */}
                 {loginCtx.isLoggedIn && 
-                <div className="lg:flex mr-3 hidden">
+                <div className="md:flex mr-3 hidden">
                 <button onClick={()=>{setMenu(!menu)}}>
                   {loginCtx.user?.profilePicture ? (
                                                   <img
@@ -128,12 +128,12 @@ export default function Navbar() {
                 {menu && (
                         <div className="absolute top-full right-10 2xl:right-36 w-[200px] max-h-40 overflow-y-auto z-30 bg-white border border-gray-300 rounded-md shadow-lg">
                           <div className="p-4">
-                            <ul className="text-sm text-gray-600 space-y-2 flex flex-col pb-4 border-b-2">
+                            <ul className="text-sm text-gray-600 space-y-2 flex flex-col pb-1">
                               <li> <Link to={`/profile/${loginCtx.user?._id}`} >My Profile.</Link>  </li>
                               { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders.</Link>  </li>}
                               <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats.</Link>  </li>
                             </ul>
-                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">{loading ? "loading.." : "Logout"}</button>
+                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer text-md font-semibold">{loading ? "loading.." : "Logout"}</button>
                           </div>
                         </div>
                     )
