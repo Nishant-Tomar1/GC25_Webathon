@@ -1,18 +1,4 @@
-import { Fragment, useState } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-} from "@headlessui/react";
-import {
-  Bars3Icon,
-  ShoppingBagIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { useState } from "react";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useDialog } from "../store/context/DialogContextProvider";
@@ -23,141 +9,18 @@ import { useLogin } from "../store/context/LoginContextProvider";
 import { LuBell } from "react-icons/lu";
 import { LuBellDot } from "react-icons/lu";
 import { RiShoppingCartLine } from "react-icons/ri";
+import { FaUserCircle } from "react-icons/fa";
 
-const navigation = {
-  categories: [
-    {
-      id: "women",
-      name: "Women",
-      featured: [
-        {
-          name: "New Arrivals",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-01.jpg",
-          imageAlt:
-            "Models sitting back to back, wearing Basic Tee in black and bone.",
-        },
-        {
-          name: "Basic Tees",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-02.jpg",
-          imageAlt:
-            "Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.",
-        },
-      ],
-      sections: [
-        {
-          id: "clothing",
-          name: "Clothing",
-          items: [
-            { name: "Tops", href: "#" },
-            { name: "Dresses", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Denim", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
-          ],
-        },
-        {
-          id: "accessories",
-          name: "Accessories",
-          items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
-          ],
-        },
-        {
-          id: "brands",
-          name: "Brands",
-          items: [
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Significant Other", href: "#" },
-          ],
-        },
-      ],
-    },
-    {
-      id: "men",
-      name: "Men",
-      featured: [
-        {
-          name: "New Arrivals",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg",
-          imageAlt:
-            "Drawstring top with elastic loop closure and textured interior padding.",
-        },
-        {
-          name: "Artwork Tees",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-06.jpg",
-          imageAlt:
-            "Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.",
-        },
-      ],
-      sections: [
-        {
-          id: "clothing",
-          name: "Clothing",
-          items: [
-            { name: "Tops", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
-          ],
-        },
-        {
-          id: "accessories",
-          name: "Accessories",
-          items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
-          ],
-        },
-        {
-          id: "brands",
-          name: "Brands",
-          items: [
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
-          ],
-        },
-      ],
-    },
-  ],
-  pages: [
-    { name: "Company", href: "#" },
-    { name: "Stores", href: "#" },
-  ],
-};
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const dialogCtx = useDialog();
   const loginCtx = useLogin()
+
+  const logoutHandler = async()=>{
+
+  }
 
   return (
     <div className="bg-white">
@@ -168,62 +31,150 @@ export default function Navbar() {
           aria-label="Top"
           className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
         >
-          <div className="border-b border-gray-200">
+          <div className="border-b border-gray-200 ">
             <div className="flex h-16 items-center">
 
               {/* Logo */}
-              <div className=" lg:flex ml-0 hidden">
+              <div className="lg:flex mr-2 hidden">
                 <Link to="/">
-                  <img alt="logo" src={logo} className="w-16 lg:w-24" />
+                  <img alt="logo" src={logo} className="w-16 lg:w-24 " />
                 </Link>
               </div>
-
               
+              <div className="flex w-full justify-between">
 
-              <div className="lg:ml-auto flex items-center">
-                <div class="flex rounded-md lg:ml-6 border-2 mr-8 border-black-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
-                  <input
-                    placeholder="Find Something..."
-                    class="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3"
-                  />
-                  <button
-                    type="button"
-                    class="flex items-center justify-center bg-[#fff] px-5"
-                  >
-                    <FaSearch />
-                  </button>
-                </div>
+                {/* Mobile */}
+                {loginCtx.isLoggedIn && 
+                <div className="flex lg:hidden mr-3 ">
+                <button onClick={()=>{setMenu(!menu)}}>
+                  {loginCtx.user?.profilePicture ? (
+                                                  <img
+                                                      className="w-6 h-6 rounded-full object-cover object-center"
+                                                      src={`${loginCtx.user?.profilePicture}`}
+                                                      alt="avatar"
+                                                  />
+                                              ) : (
+                                                 <span className="text-2xl"> <FaUserCircle /> </span>
+                                              )}
+                </button>
+                {menu && (
+                        <div className="absolute top-full left-2 2xl:right-36 w-[150px] max-h-40 overflow-y-auto z-30 bg-white border border-gray-300 rounded-md shadow-lg">
+                          <div className="p-4">
+                            <ul className="text-sm text-gray-600 space-y-2 flex flex-col  pb-4 border-b-2">
+                            <li> <Link to={`/profile/${loginCtx.user?._id}`} >My Profile.</Link>  </li>
+                            { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders.</Link>  </li>}
+                              <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats.</Link>  </li>
+                            </ul>
+                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">Logout</button>
+                          </div>
+                        </div>
+                    )
+                }
 
+              </div>
+              }
 
-                {/* Login */}
-                {!loginCtx.isLoggedIn && <div className="flex lg:flex-1 pr-2 justify-center lg:items-center lg:justify-end lg:space-x-6">
-                  <Link
-                    to="/"
-                    onClick={() => {
-                      dialogCtx.toggleDialog();
-                    }}
-                    className="text-lg font-semibold text-gray-700 hover:text-gray-800"
-                  >
-                    Login
-                  </Link>
-                </div>}
+              <div className="w-full flex items-center justify-end lg:gap-2">
+                  <div className="flex rounded-md lg:ml-6 border-2 mr-3 border-black-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
+                    <input
+                      placeholder="Find Something..."
+                      className="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3"
+                    />
+                    <button
+                      type="button"
+                      className="flex items-center justify-center bg-[#fff] px-5"
+                    >
+                      <FaSearch />
+                    </button>
+                  </div>
+
+                   {/* Desktop */}
+                {loginCtx.isLoggedIn && 
+                <div className="lg:flex mr-3 hidden">
+                <button onClick={()=>{setMenu(!menu)}}>
+                  {loginCtx.user?.profilePicture ? (
+                                                  <img
+                                                      className="w-6 h-6 rounded-full object-cover object-center"
+                                                      src={`${loginCtx.user?.profilePicture}`}
+                                                      alt="avatar"
+                                                  />
+                                              ) : (
+                                                 <span className="text-2xl"> <FaUserCircle /> </span>
+                                              )}
+                </button>
+                {menu && (
+                        <div className="absolute top-full right-10 2xl:right-36 w-[200px] max-h-40 overflow-y-auto z-30 bg-white border border-gray-300 rounded-md shadow-lg">
+                          <div className="p-4">
+                            <ul className="text-sm text-gray-600 space-y-2 flex flex-col pb-4 border-b-2">
+                              <li> <Link to={`/profile/${loginCtx.user?._id}`} >My Profile.</Link>  </li>
+                              { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders.</Link>  </li>}
+                              <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats.</Link>  </li>
+                            </ul>
+                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">Logout</button>
+                          </div>
+                        </div>
+                    )
+                }
+
+              </div>
+              }
                   
 
-                {loginCtx.isLoggedIn && <div className="text-2xl flex text-black">
-                    <LuBell/>
-                    {/* <span className="text-red-600"> <LuBellDot/> </span> */}
-                </div>}
+                  <div className="flex">
+                    
+                    {/* Login */}
+                    {!loginCtx.isLoggedIn && <div className="flex lg:flex-1 pr-2 justify-center lg:items-center lg:justify-end ">
+                      <Link
+                        to="/"
+                        onClick={() => {
+                          dialogCtx.toggleDialog();
+                        }}
+                        className="text-lg font-semibold text-gray-700 hover:text-gray-800"
+                      >
+                        Login
+                      </Link>
+                    </div>}
 
-                {/* Cart */}
-                {loginCtx.isLoggedIn && <div className="ml-4 flow-root lg:ml-6">
-                  <a href={`/cart/${loginCtx.user?._id}`} className="group -m-2 flex items-center p-2">
-                    <span className="text-2xl "><RiShoppingCartLine/></span>
-                    <span className="ml-2 text-sm font-medium text-black group-hover:text-gray-800">
-                      0
-                    </span>
-                    <span className="sr-only">items in cart, view bag</span>
-                  </a>
-                </div>}
+                  
+
+                    {loginCtx.isLoggedIn && <div onClick={()=>{setShowNotifications(!showNotifications)}} className="text-2xl flex cursor-pointer text-black">
+                        
+                        {loginCtx.notifications > 0 ? <span className="text-red-600 lg:mr-2"> <LuBellDot/> </span> : <LuBell/>}
+                        {showNotifications && (
+                            <div className="absolute top-full right-2 2xl:right-36 w-[250px] max-h-40 overflow-y-auto z-20 bg-white border border-gray-300 rounded-md shadow-lg">
+                              <div className="p-4">
+                                <h2 className="text-sm font-bold text-green-700 mb-2">New Notifications</h2>
+                                {/* Example Notifications */}
+                                <ul className="text-xs text-gray-600 space-y-2">
+                                  <li>New order received.</li>
+                                  <li>Your profile has been updated.</li>
+                                  <li>Delivery scheduled for today.</li>
+                                  <li>New order received.</li>
+                                  <li>Your profile has been updated.</li>
+                                  <li>Delivery scheduled for today.</li>
+                                </ul>
+                                <Link to={`/notifications/${loginCtx.user?._id}`} className="text-sm underline text-blue-600"> See all Notifications</Link>
+                              </div>
+                            </div>
+                        )}
+                    </div>}
+
+                  
+
+                    {/* Cart */}
+                    {(loginCtx.isLoggedIn) && (loginCtx.user?.role === "buyer") && <div className="ml-4 flow-root lg:ml-2">
+                      <a href={`/cart/${loginCtx.user?._id}`} className="group -m-2 flex items-center p-2">
+                        <span className="text-2xl "><RiShoppingCartLine/></span>
+                        <span className="ml-2 text-sm font-medium text-black group-hover:text-gray-800 hidden lg:block">
+                          0
+                        </span>
+                        <span className="sr-only">items in cart, view bag</span>
+                      </a>
+                    </div>}
+
+                  </div>
+              
+                </div>
 
 
               </div>

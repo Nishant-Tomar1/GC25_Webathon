@@ -73,7 +73,7 @@ function HomePage() {
         >
           Get your Groceries now
         </Link>
-        <div className="sm:hidden relative -right-38 w-48 top-26"><img src={logo} alt="" /></div>
+        <div className="sm:hidden relative -right-38 w-36 top-26"><img src={logo} alt="" /></div>
       </div>
       <div className="py-5 md:py-10 bg-white dark:bg-[#0b1727] text-zinc-900 dark:text-white relative overflow-hidden">
         <div className="container px-4 mx-auto">
@@ -81,8 +81,8 @@ function HomePage() {
             Special Offers
           </h2>
           <div className="flex flex-row overflow-x-auto scroll-auto">
-            {products.map((product) => (
-              <div>
+            {products.map((product,index) => (
+              <div key={index}>
                 <ProductCard
                   key={product.id}
                   title={product.title}

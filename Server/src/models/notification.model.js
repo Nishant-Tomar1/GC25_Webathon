@@ -6,6 +6,9 @@ const notificationSchema = new Schema({
     ref: 'User',
     required: true,
   },
+  title : {
+    type : String
+  },
   content: {
     type: String,
   },
