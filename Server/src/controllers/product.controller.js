@@ -61,10 +61,10 @@ const addProductImage = asyncHandler(
 
 const addProduct = asyncHandler(
     async (req, res) => {
-        const { title, description, price, category, brand, stock } = req.body;
+        const { title, description, price, category, brand, stock ,discount} = req.body;
 
         if (
-            [title, description, price, category, brand, stock].some((field) => field?.trim() === "")
+            [title, description, price, category, brand, stock ,discount].some((field) => field?.trim() === "")
         ) {
             throw new ApiError(400, "All fields are required")
         }
@@ -85,6 +85,7 @@ const addProduct = asyncHandler(
             brand,
             stock,
             category,
+            discount,
             seller: owner._id,
         })
 
@@ -198,7 +199,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     
     const { title, description, price, category, brand, stock } = req.body;
     // console.log(title, description, price, category, brand, stock,prodID)
-    if (!title || !description || !price || !category || !brand || !stock) {
+    if (!title || !description || !price || !category || !brand || !stock || !discount) {
         throw new ApiError(400, "All fields are required");
     }
 
