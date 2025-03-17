@@ -1,6 +1,6 @@
 import { Order } from "../models/order.model.js";
 
-export const addOrder = async(req,res,next)=>{
+export const addOrder = async (req, res, next) => {
 
     try {
         const { seller, buyer, product, price, status, delivery } = req.body;
@@ -24,38 +24,38 @@ export const addOrder = async(req,res,next)=>{
     } catch (error) {
         // next(error);
         res.status(500).json({
-            success:false,
-            message:"Error Creating Order",
-            error:error.message
+            success: false,
+            message: "Error Creating Order",
+            error: error.message
         })
         console.log(error.message);
     }
 
 }
 
-export const updateOrder = async(req,res,next)=>{
-try {
-    const { seller, buyer, product, price, status, delivery } = req.body;
-    const updates = {status,delivery};
-    const id = req.params;
-    const updatedOrder = Order.findByIdAndUpdate(
-        id,
-        updates,
-        {new:true}
-    );
+export const updateOrder = async (req, res, next) => {
+    try {
+        const { seller, buyer, product, price, status, delivery } = req.body;
+        const updates = { status, delivery };
+        const id = req.params;
+        const updatedOrder = Order.findByIdAndUpdate(
+            id,
+            updates,
+            { new: true }
+        );
 
-    res.status(200).json({
-        success:true,
-        message:"Successfully Updated!",
-        data: updatedOrder,
-    })
-    
-} catch (error) {
-    res.status(500).json({
-        success:false,
-        message:"Error Deleting Order",
-        error:error.message
-    })
-}
+        res.status(200).json({
+            success: true,
+            message: "Successfully Updated!",
+            data: updatedOrder,
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error Deleting Order",
+            error: error.message
+        })
+    }
 
 }

@@ -2,16 +2,16 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Product } from "../models/product.model.js";
 import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
-import { deleteFileFromCloudinary ,uploadMultipleToCloudinary } from "../utils/cloudinary.js";
+import { deleteFileFromCloudinary, uploadMultipleToCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Cart } from './../models/cart.model.js'
 import { console } from "inspector";
 
 const addProductImage = asyncHandler(
     async (req, res) => {
-        const prodID = req.params.prodID; 
+        const prodID = req.params.prodID;
         console.log(prodID);
-        
+
         const owner = await User.findById(req.user.id).select("role fullName profilePicture ");
         if (!owner) {
             throw new ApiError(400, "Owner given is not a valid user");
@@ -31,10 +31,10 @@ const addProductImage = asyncHandler(
             throw new ApiError(404, "Product not found");
         }
         console.log(imageUrls);
-        
+
         // Push new images into the product's images array
         const arr = updatedProduct.images;
-        for(let i=0;i<imageUrls.length;i++){
+        for (let i = 0; i < imageUrls.length; i++) {
             arr.push(imageUrls[i])
         }
         updatedProduct.images = arr;
@@ -58,61 +58,61 @@ const addProductImage = asyncHandler(
 );
 
 const addProduct = asyncHandler(
-    async(req,res) => {
-        const {title, description, price, category,brand,stock} = req.body;
+    async (req, res) => {
+        const { title, description, price, category, brand, stock } = req.body;
 
         if (
-            [ title, description , price, category ,brand,stock].some((field) => field?.trim()==="")
+            [title, description, price, category, brand, stock].some((field) => field?.trim() === "")
         ) {
             throw new ApiError(400, "All fields are required")
         }
-        
+
         const owner = await User.findById(req.user.id).select("role fullName profilePicture ")
         console.log(owner);
-        
-        if (!owner){
+
+        if (!owner) {
             throw new ApiError(400, "Owner given is not a valid user");
         }
-        if(owner.role!=="seller"){
+        if (owner.role !== "seller") {
             throw new ApiError(400, "Sorry you are not seller");
         }
         const product = await Product.create({
             title,
             description,
-            price, 
+            price,
             brand,
             stock,
             category,
-            seller : owner._id,
+            seller: owner._id,
         })
 
-        if(!product){
+        if (!product) {
             throw new ApiError(500, "Something went wrong while product registration in database")
         }
 
         return res
-        .status(201)
-        .json(
-            new ApiResponse(
-                200,
-                { 
-                    _id : product._id, 
-                    title : product.title, 
-                    category : product.category, 
-                    owner : product.seller
-                }, 
-                "Product Added Successfully"
+            .status(201)
+            .json(
+                new ApiResponse(
+                    200,
+                    {
+                        _id: product._id,
+                        title: product.title,
+                        category: product.category,
+                        owner: product.seller
+                    },
+                    "Product Added Successfully"
+                )
             )
-        )
     }
 )
 
 const getProducts = asyncHandler(
     async (req, res) => {
         try {
-            const { category, search, page = 1, limit = 10 } = req.query;  
+            const { category, search, page = 1, limit = 10 } = req.query;
             const skip = (Number(page) - 1) * Number(limit);
-            
+
             const query = {};
 
             if (search) {
@@ -171,10 +171,10 @@ const updateProductDetails = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
-    console.log( "dsfghj",req.user)
+    console.log("dsfghj", req.user)
     const owner = await User.findById(req.user._id).select("username fullName profilePicture role");
     console.log(owner);
-    
+
     if (!owner) {
         throw new ApiError(400, "Owner given is not a valid user");
     }
@@ -206,42 +206,42 @@ const updateProductDetails = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(    // postman check remaining   (check after implement cart)   
     async (req, res) => {
-        const {id : productId} = req.params
-        if (!productId){
+        const { id: productId } = req.params
+        if (!productId) {
             throw new ApiError(500, "Product id is required")
         }
 
         const product = await Product.findById(productId);
 
-        if (!product) { 
+        if (!product) {
             throw new ApiError(400, "Product with this id doesn't exist")
         }
 
-        if (toString(product.owner) !== toString(req.user._id)){
-            throw new ApiError(500,"User is not authorized to delete this product")
+        if (toString(product.owner) !== toString(req.user._id)) {
+            throw new ApiError(500, "User is not authorized to delete this product")
         }
 
         const cartListDeletion = await Cart.deleteMany({
-            product : productId
+            product: productId
         })
 
-        if(!cartListDeletion){
-            throw new ApiError(500,"Something went wrong while deleting the product on cart")
+        if (!cartListDeletion) {
+            throw new ApiError(500, "Something went wrong while deleting the product on cart")
         }
 
         await deleteFileFromCloudinary(product.thumbNail);
 
-        if(product.extraImage){
+        if (product.extraImage) {
             await deleteFileFromCloudinary(product.extraImage)
         }
 
         await Product.findByIdAndDelete(product._id);
 
         res
-        .status(200)
-        .json(
-            new ApiResponse(204, {}, "Product deleted Successfully")
-        )
+            .status(200)
+            .json(
+                new ApiResponse(204, {}, "Product deleted Successfully")
+            )
     }
 )
 export {
