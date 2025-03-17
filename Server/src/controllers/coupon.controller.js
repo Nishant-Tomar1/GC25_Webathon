@@ -80,6 +80,7 @@ const createCoupon = asyncHandler(async (req, res) => {
 });
 
 const checkCouponValid = asyncHandler(async (req, res) => {
+    console.log(req.body)
     const userId = req.user?.id;
     const { code } = req.body;
 

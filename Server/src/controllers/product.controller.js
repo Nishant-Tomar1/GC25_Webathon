@@ -7,6 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Cart } from './../models/cart.model.js'
 import { console } from "inspector";
 import { log } from "console";
+import mongoose from "mongoose";
 
 const addProductImage = asyncHandler(
     async (req, res) => {
@@ -60,10 +61,10 @@ const addProductImage = asyncHandler(
 
 const addProduct = asyncHandler(
     async (req, res) => {
-        const { title, description, price, category, brand, stock } = req.body;
+        const { title, description, price, category, brand, stock ,discount} = req.body;
 
         if (
-            [title, description, price, category, brand, stock].some((field) => field?.trim() === "")
+            [title, description, price, category, brand, stock ,discount].some((field) => field?.trim() === "")
         ) {
             throw new ApiError(400, "All fields are required")
         }
@@ -84,6 +85,7 @@ const addProduct = asyncHandler(
             brand,
             stock,
             category,
+            discount,
             seller: owner._id,
         })
 
@@ -111,22 +113,37 @@ const addProduct = asyncHandler(
 const getProducts = asyncHandler(
     async (req, res) => {
         try {
-            const { category, search, page = 1, limit = 10 } = req.query;
+            const { category, search, page = 1, limit = 10, id, discount } = req.query;
+        
             const skip = (Number(page) - 1) * Number(limit);
-
+        
             const query = {};
-
+        
+            if(id){
+                const product = await Product.findById(id)
+                return res
+                .status(200)
+                .json(
+                new ApiResponse(200, {
+                    product
+                }, "Product fetched successfully")
+            );}
+        
             if (search) {
                 query.$or = [
                     { title: { $regex: new RegExp(search, "i") } },
                     { description: { $regex: new RegExp(search, "i") } }
                 ];
             }
-
+        
             if (category) {
                 query.category = String(category);
             }
-
+        
+            if (discount) {
+                query.discount = { $gte: Number(discount) };
+            }
+        
             const products = await Product.aggregate([
                 { $match: query },
                 {
@@ -140,26 +157,20 @@ const getProducts = asyncHandler(
                 { $skip: skip },
                 { $limit: Number(limit) }
             ]);
-
-            const totalProducts = await Product.countDocuments(query);
-
-            if (!products || products.length === 0) {
-                throw new ApiError(404, "No products found");
-            }
-
-            return res.status(200).json(
+        
+            return res
+            .status(200)
+            .json(
                 new ApiResponse(200, {
-                    products,
-                    currentPage: Number(page),
-                    totalPages: Math.ceil(totalProducts / limit),
-                    totalProducts
+                    products
                 }, "Products fetched successfully")
             );
-
         } catch (error) {
-            console.error("Error fetching products:", error);
-            throw new ApiError(500, "Something went wrong while fetching products");
+            // It's a good practice to handle potential errors
+            console.error(error);
+            return res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
         }
+        
     }
 );
 
@@ -167,7 +178,6 @@ const getProducts = asyncHandler(
 const getProductsById = asyncHandler(async (req, res) => {
   try {
     const query = req.user?.id;
-    console.log("asm",query)
     const products = await Product.find({seller : query})
     return res.status(200).json(
       new ApiResponse(
@@ -191,7 +201,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     
     const { title, description, price, category, brand, stock } = req.body;
     // console.log(title, description, price, category, brand, stock,prodID)
-    if (!title || !description || !price || !category || !brand || !stock) {
+    if (!title || !description || !price || !category || !brand || !stock || !discount) {
         throw new ApiError(400, "All fields are required");
     }
 
@@ -230,7 +240,8 @@ const updateProductDetails = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(    // postman check remaining   (check after implement cart)   
     async (req, res) => {
-        const { id: productId } = req.params
+        const productId = req.params.prodID;
+        
         if (!productId) {
             throw new ApiError(500, "Product id is required")
         }

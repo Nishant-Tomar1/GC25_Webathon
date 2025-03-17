@@ -1,9 +1,24 @@
-import express from "express"
-import { addOrder, updateOrder } from "../controllers/order.controller.js";
+import { Router } from "express";
+import { uploadProductImages } from "../middlewares/uploadProdimage.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
+import {addOrderbyuser,getorderbyId ,getorderbyIdseller} from "../controllers/createorder.controller.js";
 
-const router = express.Router();
+const router = Router()
 
-router.post('/addOrder',addOrder);
-router.post('/updateOrder/:id',updateOrder);
+router.route("/create-order").post(verifyJWT,addOrderbyuser);
 
-export default router;
+
+router.route("/get-buyer-order").get(verifyJWT,getorderbyId);
+router.route("/get-seller-order").get(verifyJWT,getorderbyIdseller);
+// router.route('/addproductimages/:prodID').patch(
+//     verifyJWT,
+//     uploadProductImages,
+//     addProductImage
+// )
+
+// router.route("/getproducts").get(getProducts)
+
+// router.route("/updateproductdetails/:prodID").patch(verifyJWT,updateProductDetails)
+
+
+export default router

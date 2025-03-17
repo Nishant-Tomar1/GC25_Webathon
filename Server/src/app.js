@@ -25,7 +25,7 @@ app.get('/', ( __, res) => {
 
 import userRoute from './routes/user.routes.js';
 import prodRoute from './routes/product.routes.js';
-import orderRoute from './routes/order.routes.js';
+import orderRoute from './routes/order.routes.js'
 import cartRoute from './routes/Cart.routes.js';
 import ratingRoute from "./routes/rating.routes.js";
 import reviewRoute from "./routes/review.routes.js";

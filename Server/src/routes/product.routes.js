@@ -7,6 +7,7 @@ import {
   addProductImage,
   updateProductDetails,
   getProductsById,
+  deleteProduct
 } from "../controllers/product.controller.js";
 
 const router = Router()
@@ -28,5 +29,6 @@ router
   .route("/updateproductdetails/:prodID")
   .patch(verifyJWT, uploadProductImages, updateProductDetails);
 
+router.route("/deleteproduct/:prodID").delete(verifyJWT,deleteProduct);
 
 export default router

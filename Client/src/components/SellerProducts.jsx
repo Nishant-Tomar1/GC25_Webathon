@@ -11,28 +11,26 @@ function SellerProducts() {
   ]);
   const loginCtx = useLogin();
   // console.log(loginCtx.user);
- const [newProductID,setNewProductID] = useState("");
- const [form , setform ]  = useState(true);
+  const [newProductID, setNewProductID] = useState("");
+  const [form, setform] = useState(true);
 
- const fetchData = async ()=>{
-  const res = await axios.post(
-    `${Server}/product/getproductsbyid`,
-    {},
-    {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("Token"),
-      },
-    }
-    
-  );
-  console.log(res.data);
-  setProducts(res.data.data.products);
-}
+  const fetchData = async () => {
+    const res = await axios.post(
+      `${Server}/product/getproductsbyid`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("Token"),
+        },
+      }
+    );
+    console.log(res.data);
+    setProducts(res.data.data.products);
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchData();
-  },[])
-
+  }, [form]);
 
   const [newProduct, setNewProduct] = useState({
     title: "",
@@ -72,15 +70,14 @@ function SellerProducts() {
       }
       formData.append("images", file1);
       let res;
-      if(form){
+      if (form) {
         res = await axios.post(`${Server}/product/addproduct`, formData, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("Token"),
           },
         });
-      }
-      else{
-         res = await axios.patch(
+      } else {
+        res = await axios.patch(
           `${Server}/product/updateproductdetails/${newProductID}`,
           formData,
           {
@@ -91,16 +88,15 @@ function SellerProducts() {
         );
       }
 
-
       const formData2 = new FormData();
-      formData2.append("images",file1);
-      if(res.data.statusCode === 200) {
+      formData2.append("images", file1);
+      if (res.data.statusCode === 200) {
         const res2 = await axios.patch(
           `${Server}/product/addproductimages/${res.data.data._id}`,
           formData2,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
               Authorization: "Bearer " + localStorage.getItem("Token"),
             },
           }
@@ -109,20 +105,20 @@ function SellerProducts() {
           console.log(key[0] + ", " + key[1]);
         }
 
-         console.log(res2);
-         setform(true);
-         setNewProduct((prev) => ({
-           ...prev,
-           title: "",
-           description: "",
-           brand: "",
-           price: "",
-           category: "",
-           images: [],
-           seller: loginCtx.user,
-           stock: "",
-           discount: "",
-         }));
+        console.log(res2);
+        setform(true);
+        setNewProduct((prev) => ({
+          ...prev,
+          title: "",
+          description: "",
+          brand: "",
+          price: "",
+          category: "",
+          images: [],
+          seller: loginCtx.user,
+          stock: "",
+          discount: "",
+        }));
       }
     } catch (error) {
       console.log(error);
@@ -137,8 +133,19 @@ function SellerProducts() {
     setform(false);
   };
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${Server}/product/deleteproduct/${id}`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + localStorage.getItem("Token"),
+        },
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+    setform(form);
   };
 
   return (
@@ -255,7 +262,7 @@ function SellerProducts() {
 
           <div className="mb-2">
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Stock
+              Discount
             </label>
             <input
               type="number"
@@ -277,25 +284,43 @@ function SellerProducts() {
       </div>
 
       {/* Product List */}
-      
+
       <table className="w-full border">
         <thead>
           <tr className="bg-gray-200">
-            <th key={1} className="p-2">Title</th>
-            <th key={2} className="p-2">Price ($)</th>
-            <th key={3} className="p-2">Category</th>
-            <th key={4} className="p-2">Stock</th>
-            <th key={5} className="p-2">Actions</th>
+            <th key={1} className="p-2">
+              Title
+            </th>
+            <th key={2} className="p-2">
+              Price ($)
+            </th>
+            <th key={3} className="p-2">
+              Category
+            </th>
+            <th key={4} className="p-2">
+              Stock
+            </th>
+            <th key={5} className="p-2">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {products.map((product, index) => (
             <tr key={index} className="border-t">
-              <td key={product._id+"1"} className="p-2">{product.title}</td>
-              <td key={product._id+"2"} className="p-2">{product.price}</td>
-              <td key={product._id+"3"} className="p-2">{product.category}</td>
-              <td key={product._id+"4"} className="p-2">{product.stock}</td>
-              <td key={product._id+"5"} className="p-2 flex gap-2">
+              <td key={product._id + "1"} className="p-2">
+                {product.title}
+              </td>
+              <td key={product._id + "2"} className="p-2">
+                {product.price}
+              </td>
+              <td key={product._id + "3"} className="p-2">
+                {product.category}
+              </td>
+              <td key={product._id + "4"} className="p-2">
+                {product.stock}
+              </td>
+              <td key={product._id + "5"} className="p-2 flex gap-2">
                 <button
                   className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded"
                   onClick={() => handleEdit(product)}
@@ -304,7 +329,7 @@ function SellerProducts() {
                 </button>
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
-                  onClick={() => handleDelete(product.id)}
+                  onClick={() => handleDelete(product._id)}
                 >
                   <FaTrash size={16} />
                 </button>
