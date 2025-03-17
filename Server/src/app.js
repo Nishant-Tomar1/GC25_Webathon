@@ -26,6 +26,7 @@ app.get('/', ( __, res) => {
 import userRoute from './routes/user.routes.js';
 import prodRoute from './routes/product.routes.js';
 import orderRoute from './routes/order.routes.js';
+import cartRoute from './routes/Cart.routes.js';
 // import productRouter from "./routes/product.routes.js"
 // import messageRouter from "./routes/message.routes.js"
 
@@ -33,6 +34,7 @@ import orderRoute from './routes/order.routes.js';
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/product", prodRoute)
 app.use("/api/v1/order",orderRoute)
+app.use("/api/v1/cart", cartRoute)
 // app.use("/api/v1/products", productRouter)
 // app.use("/api/v1/messages", messageRouter)
 
