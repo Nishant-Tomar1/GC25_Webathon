@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import { uploadOnCloudinary, deleteFileFromCloudinary } from  "../utils/cloudinary.js"
 const generateTokens = async (userId) => {
     try {
+        
         const user = await User.findById(userId);
         if (!user) {
             throw new ApiError(404, "User not found");
@@ -98,7 +99,9 @@ const generateOPTloginUser = asyncHandler(
         }
         
         return res.status(201).json(
-            new ApiResponse(200,{}, "OTP sent successfully")
+            new ApiResponse(200,{
+                message : "OTP sent successfully"
+            }, "OTP sent successfully")
         );
     }
 );

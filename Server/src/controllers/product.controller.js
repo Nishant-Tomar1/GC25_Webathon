@@ -4,16 +4,14 @@ import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import { deleteFileFromCloudinary ,uploadMultipleToCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import mongoose from "mongoose";
-// import { Wish } from "../models/wish.model.js";
 import { Cart } from './../models/cart.model.js'
+import { console } from "inspector";
 
 const addProductImage = asyncHandler(
     async (req, res) => {
         const prodID = req.params.prodID; 
         console.log(prodID);
         
-        // Verify the owner
         const owner = await User.findById(req.user.id).select("role fullName profilePicture ");
         if (!owner) {
             throw new ApiError(400, "Owner given is not a valid user");
@@ -22,15 +20,12 @@ const addProductImage = asyncHandler(
             throw new ApiError(403, "Sorry, you are not authorized to add product images");
         }
 
-        // Ensure images are provided
         if (!req.files || req.files.length === 0) {
             throw new ApiError(400, "At least one product image is required");
         }
 
-        // Upload all images to Cloudinary
         const imageUrls = await uploadMultipleToCloudinary(req.files);
 
-        // Find the product
         const updatedProduct = await Product.findById(prodID);
         if (!updatedProduct) {
             throw new ApiError(404, "Product not found");
@@ -115,12 +110,11 @@ const addProduct = asyncHandler(
 const getProducts = asyncHandler(
     async (req, res) => {
         try {
-            const { category, search, page = 1, limit = 10 } = req.query;  // Default page and limit
+            const { category, search, page = 1, limit = 10 } = req.query;  
             const skip = (Number(page) - 1) * Number(limit);
             
             const query = {};
 
-            // Handle search query (title or description)
             if (search) {
                 query.$or = [
                     { title: { $regex: new RegExp(search, "i") } },
@@ -128,12 +122,10 @@ const getProducts = asyncHandler(
                 ];
             }
 
-            // Filter by category if provided
             if (category) {
                 query.category = String(category);
             }
 
-            // Fetch products with filtering, projection, sorting, pagination
             const products = await Product.aggregate([
                 { $match: query },
                 {
@@ -148,14 +140,12 @@ const getProducts = asyncHandler(
                 { $limit: Number(limit) }
             ]);
 
-            // Count total products for pagination info
             const totalProducts = await Product.countDocuments(query);
 
             if (!products || products.length === 0) {
                 throw new ApiError(404, "No products found");
             }
 
-            // Return products with pagination metadata
             return res.status(200).json(
                 new ApiResponse(200, {
                     products,
@@ -172,65 +162,49 @@ const getProducts = asyncHandler(
     }
 );
 
-const updateproductdetails = asyncHandler(    // postman check remaining 
-    async(req,res) => {
-        const {prodID,title, description, price, category,brand,stock} = req.body;
+const updateProductDetails = asyncHandler(async (req, res) => {
 
-        if (
-            [ title, description , price, category ,brand,stock].some((field) => field?.trim()==="")
-        ) {
-            throw new ApiError(400, "All fields are required")
-        }
-        
-        const owner = await User.findById(req.user.id).select("username fullName profilePicture ")
-
-        if (!owner){
-            throw new ApiError(400, "Owner given is not a valid user");
-        }
-        if(owner.role!=="selller"){
-            throw new ApiError(400, "Sorry you are not seller");
-        }
-        await User.findByIdAndUpdate(
-            prodID,
-            {
-                $set : {
-                    title,
-                    description,
-                    price, 
-                    brand,
-                    stock,
-                    category,
-                }
-            },
-            {
-                new : true
-            }           
-            )
-        const updatedproduct = await User.findById(prodID)
-        if(!updatedproduct){
-            throw new ApiError(500, "Something went wrong while product registration in database")
-        }
-
-        return res
-        .status(201)
-        .json(
-            new ApiResponse(
-                200,
-                { 
-                    _id : updatedproduct._id, 
-                    title : updatedproduct.title, 
-                    category : updatedproduct.category, 
-                    seller : updatedproduct.seller,
-                    stock: updatedproduct.stock,
-                    brand: updatedproduct.brand
-                }, 
-                "Product Added Successfully"
-            )
-        )
+    const prodID = req.params.prodID;
+    const { title, description, price, category, brand, stock } = req.body;
+    // console.log(title, description, price, category, brand, stock,prodID)
+    if (!title || !description || !price || !category || !brand || !stock) {
+        throw new ApiError(400, "All fields are required");
     }
-)
 
-const deleteProduct = asyncHandler(    // postman check remaining 
+    console.log( "dsfghj",req.user)
+    const owner = await User.findById(req.user._id).select("username fullName profilePicture role");
+    console.log(owner);
+    
+    if (!owner) {
+        throw new ApiError(400, "Owner given is not a valid user");
+    }
+    if (owner.role !== "seller") {
+        throw new ApiError(403, "Sorry, you are not authorized to update this product");
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+        prodID,
+        { $set: { title, description, price, brand, stock, category } },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+        throw new ApiError(500, "Something went wrong while updating the product in the database");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            _id: updatedProduct._id,
+            title: updatedProduct.title,
+            category: updatedProduct.category,
+            seller: owner.username,
+            stock: updatedProduct.stock,
+            brand: updatedProduct.brand,
+        }, "Product updated successfully")
+    );
+});
+
+const deleteProduct = asyncHandler(    // postman check remaining   (check after implement cart)   
     async (req, res) => {
         const {id : productId} = req.params
         if (!productId){
@@ -244,7 +218,6 @@ const deleteProduct = asyncHandler(    // postman check remaining
         }
 
         if (toString(product.owner) !== toString(req.user._id)){
-            // console.log(product.ownerId, req.user._id);
             throw new ApiError(500,"User is not authorized to delete this product")
         }
 
@@ -274,7 +247,7 @@ const deleteProduct = asyncHandler(    // postman check remaining
 export {
     addProduct,
     getProducts,
-    updateproductdetails,
+    updateProductDetails,
     deleteProduct,
     addProductImage
 }
