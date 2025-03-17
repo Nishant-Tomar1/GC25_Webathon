@@ -4,12 +4,13 @@ import { createContext } from "react";
 export const loginContext = createContext()
 
 function LoginContextProvider({children}){
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState({});
     const [notifications, setNotification] = useState(1);
     
 
     const loginHandler = ( user) => {
+        setIsLoggedIn(true);
         setUser(user);
     }
 

@@ -6,7 +6,7 @@ dotenv.config({ path: '.env'});
 const sendmail = async (options) => {
     const htmlTemplate = `
     <h2>Dear User,</h2>
-        Your opt for verifaction is ${options.otp}
+        Your opt for verifiction is ${options.otp}
     </body>
     </html>`;
 

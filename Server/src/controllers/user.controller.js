@@ -32,11 +32,11 @@ const generateTokens = async (userId) => {
 
 const registerUser = asyncHandler( 
     async (req,res) => {
-    console.log("hii");
-    const{fullName, email, role , contactNumber} = req.body
+
+    const{fullName, email, role , contactNumber, address} = req.body
     // validation -not empty
     if (
-        [fullName, email, role, contactNumber].some((field) => field?.trim()==="")
+        [fullName, email, role, contactNumber, address].some((field) => field?.trim()==="")
     ) {
         throw new ApiError(400, "All fields are required")
     }
@@ -52,7 +52,8 @@ const registerUser = asyncHandler(
         fullName, 
         email : email.toLowerCase(),
         contactNumber,
-        role
+        role,
+        address
     })
     // remove password and refresh token field from response
     const createdUser = await User.findById(user._id).select(
@@ -74,32 +75,30 @@ const generateOPTloginUser = asyncHandler(
         if (!email) {
             throw new ApiError(400, "Email is required");
         }
-
+        
         const user = await User.findOne({ email });
 
-        if (!user) {
-            throw new ApiError(400, "User doesn't exist");
-        }
-
+        
         const OTP = Math.floor(100000 + Math.random() * 900000);
         console.log("Generated OTP:", OTP);
-
+        
         const existingOTP = await LoginOTP.findOne({ email });
+
         if (existingOTP) {
             await LoginOTP.findByIdAndDelete(existingOTP._id);
         }
-
+        
         const otplogin = await LoginOTP.create({ email, OTP });
-
+        
         await sendmail({ email, otp: OTP });
-
+        
         const createdOTP = await LoginOTP.findById(otplogin._id);
         if (!createdOTP) {
             throw new ApiError(500, "Something went wrong during login");
         }
-
+        
         return res.status(201).json(
-            new ApiResponse(200, createdOTP, "OTP sent successfully")
+            new ApiResponse(200,{}, "OTP sent successfully")
         );
     }
 );
@@ -146,24 +145,24 @@ const verifyOTP = asyncHandler(
         if (!email || !otp) {
             throw new ApiError(400, "Email and OTP both are required");
         }
-
-        const loggedInUser = await User.findOne({ email });
-
-        if (!loggedInUser) {
-            throw new ApiError(400, "User doesn't exist");
-        }
-
+        
         const otpRecord = await LoginOTP.findOne({ email, OTP: otp });
-
+        
         if (!otpRecord) {
             throw new ApiError(400, "Wrong OTP");
         }
-        const {Token} = await generateTokens(loggedInUser._id);
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(200).json(new ApiResponse(400, {email}, "User does not exist in database"))
+        }
+
+        const {Token} = await generateTokens(user._id);
         // Optional: Clean up the OTP record after successful verification
         // await LoginOTP.findByIdAndDelete(otpRecord._id);
         console.log(Token);
         return res.status(200).json(
-            new ApiResponse(200, {loggedInUser,Token}
+            new ApiResponse(200, {user,Token}
                 , "Login successful")
         );
     }
@@ -210,9 +209,12 @@ const getcurUserdetails = asyncHandler(
 )
 const getUserbyID = asyncHandler(
     async(req,res)=>{
+        console.log(req.params.UserID);
+        
         const curUser = await User.findById(req.params.UserID).select(
             "-Token"
         );
+        
         if(!curUser){
             throw new ApiError(500, "Could not fetch Users data!")
         }
