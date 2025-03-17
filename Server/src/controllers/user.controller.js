@@ -223,7 +223,7 @@ const getUserbyID = asyncHandler(
 
 const updateAccountDetails = asyncHandler(
     async (req, res) => {
-        const { fullName, email, contactNumber } = req.body;
+        const { fullName, email, contactNumber,address } = req.body;
 
         if (!fullName || !email || !contactNumber) {
             throw new ApiError(401, "All fields are required (fullname and email)")
@@ -243,7 +243,8 @@ const updateAccountDetails = asyncHandler(
                 $set: {
                     fullName,
                     email: email,
-                    contactNumber
+                    contactNumber,
+                    address,
                 }
             },
             {

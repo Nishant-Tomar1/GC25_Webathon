@@ -33,7 +33,7 @@ import couponRoute from "./routes/coupon.routes.js";
 
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/product", prodRoute)
-app.use("/api/v1/order12",orderRoute)
+app.use("/api/v1/order",orderRoute)
 app.use("/api/v1/cart", cartRoute)
 app.use("/api/v1/rating", ratingRoute)
 app.use("/api/v1/review",reviewRoute)
