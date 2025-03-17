@@ -36,19 +36,7 @@ const productSchema = new Schema({
     discount : {
         type : Number,
         default : 0,
-    },
-	ratings: [
-        {
-            type : Schema.Types.ObjectId,
-			ref : "Rating"
-        },
-    ],
-    reviews: [
-        {
-            type : Schema.Types.ObjectId, 
-			ref : "Review"
-        },
-    ],
+    }
 },{timestamps : true});
 
 export const Product =  mongoose.model('Product', productSchema);

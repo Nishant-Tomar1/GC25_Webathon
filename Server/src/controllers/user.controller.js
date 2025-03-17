@@ -100,7 +100,9 @@ const generateOPTloginUser = asyncHandler(
         }
 
         return res.status(201).json(
-            new ApiResponse(200, createdOTP, "OTP sent successfully")
+            new ApiResponse(200,{
+                message : "OTP sent successfully"
+            }, "OTP sent successfully")
         );
     }
 );
