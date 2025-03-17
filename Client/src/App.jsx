@@ -11,7 +11,10 @@ import Notifications from "./components/Notifications"
 import SellerPortal from "./pages/SellerPortal"
 import ProductCard from "./pages/productPage"
 import MyProfile from "./pages/myprofile"
-
+import { useEffect } from "react"
+import axios from "axios"
+import { Server } from "./Constants"
+import { useLogin } from "./store/context/LoginContextProvider"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,13 +28,39 @@ const router = createBrowserRouter(
       <Route path="/seller/:userId" element={<SellerPortal />} />
       <Route path="/myprofile" element={<MyProfile />} />
       <Route path="*" element={<ErrorPage />} />
-      
     </Route>
   )
 );
 
 
 function App() {
+  const loginCtx = useLogin();
+
+  const verifyUser = async()=>{
+    if (localStorage.getItem("Token")){
+      try {
+        const res = await axios.get(`${Server}/users/verify-token`,{
+          headers : {
+            Authorization : 
+              "Bearer "+ localStorage.getItem("Token")
+          }
+        })
+        
+        if (res.data.statusCode === 200){
+          console.log("halwa");
+          loginCtx.login(res.data.data.user);
+          localStorage.setItem("Token",res.data.data.Token);
+        }
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+  }
+  useEffect(()=>{
+    verifyUser()
+  },[])
   
   return (
     <>     

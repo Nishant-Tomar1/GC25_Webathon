@@ -339,7 +339,7 @@ const verifyToken = asyncHandler(
             if (!user){
                 throw new ApiError(401, "Invalid Token");
             }
-            console.log("sdfv")
+            
             const {Token : newToken} = await generateTokens(user._id);
             const loggeduser = await User.findById(decodedRefreshToken.id)
             const options = {

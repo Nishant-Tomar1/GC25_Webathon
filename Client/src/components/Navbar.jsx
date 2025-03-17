@@ -10,16 +10,39 @@ import { LuBell } from "react-icons/lu";
 import { LuBellDot } from "react-icons/lu";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { Server } from "../Constants";
+import axios from "axios";
+import Loader from "./Loader";
 
 
 export default function Navbar() {
+  const [loading, setLoading] = useState(false);
   const [menu, setMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const dialogCtx = useDialog();
   const loginCtx = useLogin()
 
-  const logoutHandler = async()=>{
 
+  const logoutHandler = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${Server}/users/logout`, {},
+        {
+          headers : {
+        Authorization : "Bearer "+localStorage.getItem("Token")
+      }}
+    )
+      if (res.data.statusCode === 200){
+        loginCtx.logout();
+      }
+      toast.success("Logged Out Successfully")
+      setLoading(false)
+    } catch (error) {
+      console.log(error);
+      setLoading(false)
+      toast.success("Somthing went wrong! Try again")
+    }
   }
 
   return (
@@ -65,7 +88,7 @@ export default function Navbar() {
                             { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders.</Link>  </li>}
                               <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats.</Link>  </li>
                             </ul>
-                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">Logout</button>
+                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">{loading ? "loading..." : "Logout"}</button>
                           </div>
                         </div>
                     )
@@ -110,7 +133,7 @@ export default function Navbar() {
                               { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} >My Orders.</Link>  </li>}
                               <li> <Link to={`/chats/${loginCtx.user?._id}`}>My Chats.</Link>  </li>
                             </ul>
-                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">Logout</button>
+                            <button onClick={logoutHandler} className="text-red-600 cursor-pointer mt-1 text-md font-semibold">{loading ? "loading.." : "Logout"}</button>
                           </div>
                         </div>
                     )

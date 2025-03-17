@@ -17,6 +17,7 @@ function LoginContextProvider({children}){
     const logoutHandler = () => {
         setIsLoggedIn(false);
         setUser({});
+        localStorage.removeItem("Token");
     }
 
     const notificationHandler = (newcount) => {
