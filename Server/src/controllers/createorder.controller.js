@@ -5,9 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import { deleteFileFromCloudinary, uploadMultipleToCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Order } from './../models/order.model.js'
-import { console } from "inspector";
-import { log } from "console";
-
+import mongoose  from 'mongoose'
 
 const addOrderProduct = async (cartArray, userId) => {
     try {
@@ -38,55 +36,48 @@ const addOrderProduct = async (cartArray, userId) => {
     }
 };
 
-// const addOrderbyuser = asyncHandler( async (req, res) => {
-//     try {
-//         console.log("sdfghfdsa");
-//         // const cartArray = req.body.cartarray;
-//         // const userId = req.user?.id;
+const addOrderbyuser = asyncHandler( async (req, res) => {
+    try {
+        
+        const cartArray = req.body.cartarray;
+        const userId = req.user?.id;
 
-//         // const success = await addOrderProduct(cartArray, userId);
+        const success = await addOrderProduct(cartArray, userId);
+        console.log("sdfghfdsa");
+        if (!success) {
+            throw new ApiError(500, "Failed to place order.");
+        }
+        res.status(201).json(new ApiResponse(201, {}, "Order Placed Successfully"));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
+    }
+});
 
-//         // if (!success) {
-//         //     throw new ApiError(500, "Failed to place order.");
-//         // }
-//         // return ;
-//         res.status(201).json(new ApiResponse(201, {}, "Order Placed Successfully"));
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
-//     }
-// });
+const getorderbyId = asyncHandler(
+    async(req,res)=>{
+        const userorder = await Order.find({buyer:req.user?.id})
+        .populate("product", "title price brand stock description images discount")
+        .select("-createdAt -updatedAt");
+        if(!userorder){
+            throw new ApiError(400, "error during find your order");
+        }
+        res.status(201).json(new ApiResponse(201, {userorder}, "Order fetched"));
+    }
+)
 
-const addorder = async (req,res) =>{
-    const data = req.body;
-    console.log(data);
-    
-    // const userId = req.user?.id;
-    // const { code } = req.body;
 
-    // if (!code || !userId ) {
-    //     throw new ApiError(400, "Coupon code, user ID, and cart total are required.");
-    // }
-    // const user = await User.findById(userId);
-
-    // if(!user){
-    //     throw new ApiError(400,"Error while fetching user")
-    // }
-    // if(user.role!=="seller"){
-    //     throw new ApiError(400,"Your are not authorize")
-    // }
-    // const coupon = await Coupon.findOne({ code: code.toUpperCase() });
-
-    // if (coupon) {
-    //     throw new ApiError(404, "Copon already exist");
-    // }
-    res.status(200).json(
-        new ApiResponse(200, { 
-            msg:req.body
-        }, "Coupon is valid.")
-    );
-}
-
+const getorderbyIdseller = asyncHandler(
+    async(req,res)=>{
+        const userorder = await Order.find({seller:req.user?.id})
+        .populate("product", "title price brand stock description images discount")
+        .select("-createdAt -updatedAt");
+        if(!userorder){
+            throw new ApiError(400, "error during find your order");
+        }
+        res.status(201).json(new ApiResponse(201, {userorder}, "Order fetched"));
+    }
+)
 // export const addOrder = async (req, res, next) => {
 
 //     try {
@@ -149,5 +140,7 @@ const addorder = async (req,res) =>{
 
 export {
     
-    addorder
+    addOrderbyuser,
+    getorderbyId,
+    getorderbyIdseller
 }
