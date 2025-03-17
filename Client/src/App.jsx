@@ -8,6 +8,8 @@ import OrderHistory from "./pages/OrderHistory"
 import Cart from "./pages/Cart"
 import ProductDetail from "./pages/ProductDetail"
 import Notifications from "./components/Notifications"
+import SellerPortal from "./pages/SellerPortal"
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,7 +18,8 @@ const router = createBrowserRouter(
       <Route path="/orderhistory" element={<OrderHistory />} />
       <Route path="/cart/:userId" element={<Cart />} />
       <Route path="/product/:productId" element={<ProductDetail />} />
-      <Route path="/notifications/:userId" element={<Notifications/>} />
+      <Route path="/notifications/:userId" element={<Notifications />} />
+      <Route path="/seller/:userId" element={<SellerPortal />} />
       <Route path="*" element={<ErrorPage />} />
     </Route>
   )
