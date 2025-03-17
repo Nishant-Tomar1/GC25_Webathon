@@ -69,14 +69,14 @@ function Cart() {
   }, []);
   return (
     <>
-      <div className="bg-white p-8 antialiased md:py-16">
+      <div className="bg-white p-8 antialiased md:py-10">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
           <h2 className="text-xl text-bold text-center text-gray-900 sm:text-2xl">
             Shopping Cart
           </h2>
 
-          <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-            <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
+          <div className="mt-4 sm:mt-8 md:gap-4 lg:flex lg:items-start xl:gap-8">
+            <div className="mx-auto w-2/3 flex-none lg:max-w-2xl xl:max-w-4xl">
               <div className="space-y-6">
                 {carts.map((cart, index) => (
                   <div
@@ -173,7 +173,7 @@ function Cart() {
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                         Original price
                       </dt>
-                      <dd className="text-base text-sm font-medium text-gray-900    ">
+                      <dd className="text-sm font-medium text-gray-900    ">
                         Rs {originalprice}
                       </dd>
                     </dl>
@@ -182,7 +182,7 @@ function Cart() {
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                         Discount
                       </dt>
-                      <dd className="text-base text-sm font-medium text-green-600">
+                      <dd className=" text-sm font-medium text-green-600">
                         -Rs {discountprice}
                       </dd>
                     </dl>
@@ -191,7 +191,7 @@ function Cart() {
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                         Coupon
                       </dt>
-                      <dd className="text-base text-sm font-medium text-green-600  ">
+                      <dd className="text-sm font-medium text-green-600  ">
                         -Rs {coupondiscount}
                       </dd>
                     </dl>
@@ -200,7 +200,7 @@ function Cart() {
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                         Tax
                       </dt>
-                      <dd className="text-base text-sm font-medium text-gray-900    ">
+                      <dd className=" text-sm font-medium text-gray-900    ">
                         (15% GST) Rs{" "}
                         {(
                           (originalprice - discountprice - coupondiscount) *
@@ -214,7 +214,7 @@ function Cart() {
                     <dt className="text-base font-bold text-gray-900    ">
                       Total
                     </dt>
-                    <dd className="text-base text-sm font-bold text-gray-900    ">
+                    <dd className="text-sm font-bold text-gray-900    ">
                       Rs {(finalprice * 1.15).toFixed(2)}
                     </dd>
                   </dl>
@@ -255,7 +255,7 @@ function Cart() {
                     <input
                       type="text"
                       id="voucher"
-                      className="block w-full border rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
+                      className="block w-full border rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm "
                       placeholder=""
                       required
                     />

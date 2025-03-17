@@ -1,8 +1,10 @@
 import axios from "axios";
 import { use, useEffect, useState } from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Server } from "../Constants";
+import { useLogin } from "../store/context/LoginContextProvider";
+import { toast } from "react-toastify";
 
 function ProductCard() {
     const location = useLocation()
@@ -11,6 +13,28 @@ function ProductCard() {
     const [reviews, setReviews] = useState([])
     const [product, setProduct] = useState({})
     const [seller, setSeller] = useState("");
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const loginCtx = useLogin()
+
+    const createCartEntity = async (productId) => {
+      setLoading(true)
+      try {
+        const res = await axios.post(`${Server}/cart/add-item-to-cart/${productId}`, {quantity : 1}, {headers : {
+          Authorization : "Bearer "+localStorage.getItem("Token")
+        }})
+        console.log(res);
+        if (res.data.statusCode === 200){
+            toast.success("Product added to Cart !!")
+            navigate(`/cart/${loginCtx.user?._id}`)
+        }
+        setLoading(false)
+      } catch (error) {
+        console.log(error);
+        toast.error("Couldn't Add to Cart! Try Again")
+        setLoading(false)
+      }
+    }
 
     const fetchProduct = async () => {
       try {
@@ -122,8 +146,8 @@ function ProductCard() {
         <div className="mt-2">
           {/* <span>⭐ </span> */}
           <div className="flex items-center">
-            <span className="text-black font-bold text-lg mr-1">
-              {rating}
+            <span className="text-black font-bold text-lg mr-2">
+              {rating > 0 ? rating : "No ratings yet "}
             </span>
             {[...Array(5)].map((_, index) => {
               const isHalfStar = rating - index > 0 && rating - index < 1;
@@ -152,14 +176,15 @@ function ProductCard() {
         </div>
         <div>
           <div className="flex flex-col space-y-2 mt-2">
-            <button  className="bg-green-500 text-white w-full py-2 mt-4 rounded-md text-xl md:text-2xl hover:bg-green-600">
-             ADD TO CART
+            <button onClick={()=>{createCartEntity(productId)}}  className="bg-green-500 cursor-pointer text-white w-full py-2 mt-4 rounded-md text-xl md:text-2xl hover:bg-green-600">
+             {loading ? "Adding..." :"ADD TO CART"}
             </button>
 
             {/* Reviews */}
-            <div className=" p-3 bg-gradient-to-br mt-3 from-green-200 to-white rounded-xl ">
+            <div className=" p-3 bg-gradient-to-br text-center mt-3 from-green-200 to-white rounded-xl ">
               <h3 className="text-black font-semibold mb-2">Top Reviews:</h3>
-              {reviews?.map((review, index) => (
+              {!reviews && <span>No reviews yet</span>}
+              {reviews?.length>0 && reviews?.map((review, index) => (
                 <div key={index} className="flex items-start space-x-2 mb-2 mt-5">
                   <div className="w-8 h-8 flex items-center justify-center bg-green-500 text-white font-bold rounded-full">
                     {review.comment}
@@ -169,32 +194,12 @@ function ProductCard() {
                   </div>
                 </div>
               ))}
-              <div className="text-sm mt-4 cursor-pointer hover:underline">Click to see More</div>
+              {/* <div className="text-sm mt-4 cursor-pointer hover:underline">Click to see More</div> */}
             </div>
           </div>
         </div>
         {/* Unit Selection */}
-        {/* <div className="mt-4">
-          <h3 className="font-semibold">Select Unit</h3>
-          <div className="flex gap-2 mt-2">
-            {product.units.map((unit) => (
-              <button
-                key={unit.size}
-                className={`px-4 py-2 border rounded-md ${
-                  selectedUnit === unit.size ? 'bg-green-100 border-green-500' : 'bg-gray-100 border-gray-300'
-                }`}
-                onClick={() => handleUnitSelect(unit.size)}
-              >
-                {unit.size} - ₹{unit.price}
-              </button>
-            ))}
-          </div>
-        </div> */}
-
-        {/* Add Button */}
-
-        {/* Info Section */}
-        <div className="mt-6"></div>
+        
       </div>
     </div>
   );

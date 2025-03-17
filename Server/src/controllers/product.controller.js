@@ -112,12 +112,12 @@ const addProduct = asyncHandler(
 const getProducts = asyncHandler(
     async (req, res) => {
         try {
-            const { category, search, page = 1, limit = 10, id } = req.query;
-            
+            const { category, search, page = 1, limit = 10, id, discount } = req.query;
+        
             const skip = (Number(page) - 1) * Number(limit);
-
+        
             const query = {};
-
+        
             if(id){
                 const product = await Product.findById(id)
                 return res
@@ -125,22 +125,24 @@ const getProducts = asyncHandler(
                 .json(
                 new ApiResponse(200, {
                     product
-                }, "Products fetched successfully")
-            );
-            }
-            
+                }, "Product fetched successfully")
+            );}
+        
             if (search) {
                 query.$or = [
                     { title: { $regex: new RegExp(search, "i") } },
                     { description: { $regex: new RegExp(search, "i") } }
                 ];
             }
-
+        
             if (category) {
                 query.category = String(category);
             }
-
-            
+        
+            if (discount) {
+                query.discount = { $gte: Number(discount) };
+            }
+        
             const products = await Product.aggregate([
                 { $match: query },
                 {
@@ -154,8 +156,7 @@ const getProducts = asyncHandler(
                 { $skip: skip },
                 { $limit: Number(limit) }
             ]);
-
-
+        
             return res
             .status(200)
             .json(
@@ -163,11 +164,12 @@ const getProducts = asyncHandler(
                     products
                 }, "Products fetched successfully")
             );
-
         } catch (error) {
-            console.error("Error fetching products:", error);
-            throw new ApiError(500, "Something went wrong while fetching products");
+            // It's a good practice to handle potential errors
+            console.error(error);
+            return res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
         }
+        
     }
 );
 
