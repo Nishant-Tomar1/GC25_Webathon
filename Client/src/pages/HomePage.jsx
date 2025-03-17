@@ -1,5 +1,4 @@
 import {React,useState} from "react";
-import { useDialog } from "../store/context/DialogContextProvider";
 import ProductCard from "../components/ProductCard";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,12 +7,11 @@ import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Button } from "@headlessui/react";
 import logo from  "../assets/logo.png"
 
 const products = [
   {
-    id: 1,
+    _id: "67d853838a23d8ecfacf063d",
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_3.png",
     discount: 5,
     title: "School Bag",
@@ -21,7 +19,7 @@ const products = [
     price: 676,
   },
   {
-    id: 2,
+    _id: 2,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_4.png",
     discount: 5,
     title: "TeddyBea adsdddddddddddddddddddd ddddrr",
@@ -29,15 +27,15 @@ const products = [
     price: 676,
   },
   {
-    id: 3,
+    _id: 3,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_5.png",
-    discount: 5,
+    discount: 0,
     title: "Baby Truck",
     rating: 4.5,
     price: 676,
   },
   {
-    id: 4,
+    _id: 4,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_6.png",
     discount: 5,
     title: "Scooter",
@@ -45,17 +43,17 @@ const products = [
     price: 676,
   },
   {
-    id: 5,
+    _id: 5,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_4.png",
-    discount: 5,
+    discount: 0,
     title: "Teddy Bear",
     rating: 3.5,
     price: 676,
   },
   {
-    id: 6,
+    _id: 6,
     imageUrl: "https://cdn.easyfrontend.com/pictures/ecommerce/grid_9_4.png",
-    discount: 5,
+    discount: 0,
     title: "Teddy Be",
     rating: 3.5,
     price: 676,
@@ -84,7 +82,8 @@ function HomePage() {
             {products.map((product,index) => (
               <div key={index}>
                 <ProductCard
-                  key={product.id}
+                  key={product._id}
+                  id ={product._id}
                   title={product.title}
                   discount={product.discount}
                   price={product.price}
@@ -109,8 +108,9 @@ function HomePage() {
                 325: { slidesPerView: 1.35 },
                 500: { slidesPerView: 2 },
                 800: { slidesPerView: 2.5 },
-                1200: { slidesPerView: 4.75 },
-                1308: { slidesPerView: 5.5 },
+                1200: { slidesPerView: 4 },
+                1308: { slidesPerView: 4.5 },
+                1450 : { slidesPerView: 5 },
               }}
               loop={true}
               onSwiper={setSwiper}
@@ -121,6 +121,7 @@ function HomePage() {
                 <SwiperSlide key={product.id}>
                   <div>
                     <ProductCard
+                      id={product._id}
                       key={product.id}
                       title={product.title}
                       discount={product.discount}

@@ -7,6 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Cart } from './../models/cart.model.js'
 import { console } from "inspector";
 import { log } from "console";
+import mongoose from "mongoose";
 
 const addProductImage = asyncHandler(
     async (req, res) => {
@@ -111,11 +112,23 @@ const addProduct = asyncHandler(
 const getProducts = asyncHandler(
     async (req, res) => {
         try {
-            const { category, search, page = 1, limit = 10 } = req.query;
+            const { category, search, page = 1, limit = 10, id } = req.query;
+            
             const skip = (Number(page) - 1) * Number(limit);
 
             const query = {};
 
+            if(id){
+                const product = await Product.findById(id)
+                return res
+                .status(200)
+                .json(
+                new ApiResponse(200, {
+                    product
+                }, "Products fetched successfully")
+            );
+            }
+            
             if (search) {
                 query.$or = [
                     { title: { $regex: new RegExp(search, "i") } },
@@ -127,6 +140,7 @@ const getProducts = asyncHandler(
                 query.category = String(category);
             }
 
+            
             const products = await Product.aggregate([
                 { $match: query },
                 {
@@ -141,18 +155,12 @@ const getProducts = asyncHandler(
                 { $limit: Number(limit) }
             ]);
 
-            const totalProducts = await Product.countDocuments(query);
 
-            if (!products || products.length === 0) {
-                throw new ApiError(404, "No products found");
-            }
-
-            return res.status(200).json(
+            return res
+            .status(200)
+            .json(
                 new ApiResponse(200, {
-                    products,
-                    currentPage: Number(page),
-                    totalPages: Math.ceil(totalProducts / limit),
-                    totalProducts
+                    products
                 }, "Products fetched successfully")
             );
 
@@ -167,7 +175,6 @@ const getProducts = asyncHandler(
 const getProductsById = asyncHandler(async (req, res) => {
   try {
     const query = req.user?.id;
-    console.log("asm",query)
     const products = await Product.find({seller : query})
     return res.status(200).json(
       new ApiResponse(

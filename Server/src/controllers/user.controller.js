@@ -21,7 +21,7 @@ const generateTokens = async (userId) => {
         user.Token = Token;
         await user.save({ validateBeforeSave: false });
 
-        console.log("Generated Token:", Token);
+        // console.log("Generated Token:", Token);
         return { Token };
     } catch (error) {
         console.error("Error generating token:", error);
@@ -320,16 +320,16 @@ const verifyToken = asyncHandler(
                 throw new ApiError(401, "Unauthorized Request")
             }
             const decodedRefreshToken = jwt.verify(incomingRefreshToken, process.env.TOKEN_SECRET);
-            console.log(decodedRefreshToken);
+            // console.log(decodedRefreshToken);
 
             const user = await User.findById(decodedRefreshToken.id)
 
-            console.log(user.Token);
+            // console.log(user.Token);
 
             if (!user) {
                 throw new ApiError(401, "Invalid Token");
             }
-            console.log("sdfv")
+            // console.log("sdfv")
             const {Token : newToken} = await generateTokens(user._id);
             const loggeduser = await User.findById(decodedRefreshToken.id)
             const options = {

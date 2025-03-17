@@ -49,7 +49,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen fixed w-full bg-gray-100">
       {/* Hamburger Button */}
       <button 
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -113,60 +113,5 @@ const Dashboard = () => {
   );
 };
 
-// // Sidebar Item Component
-// const NavItem = ({ icon, label, active, onClick }) => (
-//   <div
-//     onClick={onClick}
-//     className={`flex items-center space-x-3 px-4 py-2 rounded-lg cursor-pointer ${
-//       active ? 'bg-gray-200 text-gray-800 font-semibold' : 'text-gray-600 hover:bg-gray-100'
-//     }`}
-//   >
-//     <span className="text-lg">{icon}</span>
-//     <span>{label}</span>
-//   </div>
-// );
-
-// // Address Component
-// const MyAddresses = () => (
-//   <div>
-//     <h2 className="text-2xl font-bold mb-4">My addresses</h2>
-//     <button className="text-green-600 font-semibold mb-4">+ Add new address</button>
-//     <div className="border rounded-lg p-4 flex items-center justify-between">
-//       <div>
-//         <h3 className="font-semibold">Home</h3>
-//         <p className="text-gray-600">Manish, vchvjc, Delhi cantt railway Junction Kirby Place, Delhi Cantonment, New Delhi, Delhi, India</p>
-//       </div>
-//       <div className="text-gray-400 cursor-pointer">•••</div>
-//     </div>
-//   </div>
-// );
-
-// // Orders Component
-// const MyOrders = () => (
-//   <div>
-//     <h2 className="text-2xl font-bold mb-4">My Orders</h2>
-//     <p className="text-gray-600">You have no orders yet!</p>
-//   </div>
-// );
-
-// // E-Gift Cards Component
-// const EGiftCards = () => (
-//   <div className="flex flex-col items-center justify-center mt-20">
-//     <img
-//       src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png"
-//       alt="No gift cards"
-//       className="w-40 h-40 mb-4"
-//     />
-//     <p className="text-gray-600 font-semibold">No e-gift cards to show here!</p>
-//   </div>
-// );
-
-// // Account Privacy Component
-// const AccountPrivacy = () => (
-//   <div>
-//     <h2 className="text-2xl font-bold mb-4">Account Privacy</h2>
-//     <p className="text-gray-600">Manage your account privacy settings here.</p>
-//   </div>
-// );
 
 export default Dashboard;
