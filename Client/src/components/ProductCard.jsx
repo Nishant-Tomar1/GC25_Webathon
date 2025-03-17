@@ -52,9 +52,9 @@ const ProductCard = ({title, price = 100, discount = 0 , image}) => {
           <span className="text-sm font-bold text-gray-800">
             ₹ {(price - (discount * price) / 100).toFixed(2)}
           </span>
-          <span className="text-sm text-gray-500 line-through ml-2">
+          {discount>0 && <span className="text-sm text-gray-500 line-through ml-2">
             ₹ {price}
-          </span>
+          </span>}
         </div>
         <button className="bg-gray-100 font-semibold text-green-800 text-xs px-5 py-2 rounded-md border border-green-800">
           ADD

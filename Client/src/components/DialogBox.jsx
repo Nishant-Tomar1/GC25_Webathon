@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useDialog } from "../store/context/DialogContextProvider";
-import logo from "../assets/logo.png"
-import { useNavigate } from "react-router-dom";
 
 const DialogBox = ({children}) => {
   const dialogCtx = useDialog();
@@ -12,7 +10,7 @@ const DialogBox = ({children}) => {
     <div className="relative">
 
       {dialogCtx.open && (
-        <div className="fixed inset-0 bg-trasparent bg-opacity-50 backdrop-brightness-40 flex items-center justify-center z-50 ">
+        <div className="fixed inset-0 bg-trasparent bg-opacity-50 backdrop-brightness-40 flex items-center justify-center z-50 px-2">
           {/* Dialog Box */}
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6">
             {/* Back Button */}

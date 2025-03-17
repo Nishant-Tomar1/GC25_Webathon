@@ -33,4 +33,4 @@ function LoginContextProvider({children}){
 
 const useLogin = () => useContext(loginContext)
 
-export {useLogin , LoginContextProvider};
+export {useLogin, LoginContextProvider};

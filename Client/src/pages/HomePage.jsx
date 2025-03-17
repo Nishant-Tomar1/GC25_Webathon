@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Button } from "@headlessui/react";
+import logo from  "../assets/logo.png"
 
 const products = [
   {
@@ -63,16 +64,16 @@ const products = [
 
 function HomePage() {
   const [swiper, setSwiper] = useState(null);
-  const dialogCtx = useDialog();
   return (
     <>
       <div className="relative w-full h-64 sm:h-85 md:h-100 lg:h-100 bg-[url(/public/banner.jpg)] bg-cover bg-center">
         <Link
           to="/list"
-          className="absolute hidden md:right-80 font-semibold sm:block sm:bottom-40 sm:right-55 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
+          className="absolute hidden md:right-80 font-semibold sm:block sm:bottom-46 sm:right-52 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
         >
           Get your Groceries now
         </Link>
+        <div className="sm:hidden relative -right-38 w-48 top-26"><img src={logo} alt="" /></div>
       </div>
       <div className="py-5 md:py-10 bg-white dark:bg-[#0b1727] text-zinc-900 dark:text-white relative overflow-hidden">
         <div className="container px-4 mx-auto">
@@ -105,6 +106,7 @@ function HomePage() {
               modules={[Navigation, Pagination]}
               spaceBetween={0}
               breakpoints={{
+                325: { slidesPerView: 1.35 },
                 500: { slidesPerView: 2 },
                 800: { slidesPerView: 2.5 },
                 1200: { slidesPerView: 4.75 },
@@ -129,12 +131,12 @@ function HomePage() {
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="absolute top-1/2 left-4 z-10 ">
+            <div className="absolute top-1/2 -left-2 lg:left-4 z-10 ">
               <button variant="outline" onClick={() => swiper?.slidePrev()}>
                 <FaArrowCircleLeft size={30} />
               </button>
             </div>
-            <div className="absolute top-1/2 right-4 z-10 ">
+            <div className="absolute top-1/2 right-2 lg:right-4 z-10 ">
               <button variant="outline" onClick={() => swiper?.slideNext()}>
                 <FaArrowCircleRight size={30} />
               </button>
