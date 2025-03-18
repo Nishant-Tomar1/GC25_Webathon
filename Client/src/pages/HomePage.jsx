@@ -64,6 +64,8 @@ import { Server } from "../Constants";
 
 function HomePage() {
   const [swiper, setSwiper] = useState(null);
+  const [swiper1, setSwiper1] = useState(null);
+  const [swiper2, setSwiper2] = useState(null);
   const [products, setProducts] = useState({});
   const [specialproducts, setSpecialproducts] = useState([]);
   const Categories = ['Electronics and Appliances', 'Home and Furniture','Fashion and Beauty','Sports and Hobbies','Stationary','Groceries','Pharmacy']
@@ -145,7 +147,7 @@ function HomePage() {
             Shop By Categories
           </div>
           {
-            Object.keys(products).map((Category) => (
+            Object.keys(products).map((Category,index) => (
               (products[Category].length > 0) &&
               <div key={Category} className="relative py-3 w-full mx-auto">
                 <h2 className="text-xl md:text-3xl font-bold">{Category}</h2>
@@ -161,7 +163,7 @@ function HomePage() {
                     1450: { slidesPerView: 5 },
                   }}
                   loop={true}
-                  onSwiper={setSwiper}
+                  onSwiper={(index==0)?setSwiper:(index==1)?setSwiper1:setSwiper2}
                   pagination={{ clickable: true }}
                   className="py-6"
                 >
@@ -174,19 +176,36 @@ function HomePage() {
                           title={product.title}
                           discount={product.discount}
                           price={product.price}
-                          image={product.images?.[0]}
+                          image={product.images[0]}
                         />
                       </div>
                     </SwiperSlide>
                   ))}
                 </Swiper>
-                <div className="absolute top-1/2 -left-2 lg:left-4 z-10">
-                  <button variant="outline" onClick={() => swiper?.slidePrev()}>
+                <div className="absolute top-1/2 left-2 lg:left-4 z-10">
+                  <button variant="outline" onClick={() => {
+                    if(index==0){
+                      swiper?.slidePrev();
+                    }else if(index==1){
+                      swiper1?.slidePrev();
+                    }else{
+                      swiper2?.slidePrev();
+                    }
+                    
+                    }}>
                     <FaArrowCircleLeft size={30} />
                   </button>
                 </div>
                 <div className="absolute top-1/2 right-2 lg:right-4 z-10">
-                  <button variant="outline" onClick={() => swiper?.slideNext()}>
+                  <button variant="outline" onClick={() => {
+                    if (index == 0) {
+                      swiper?.slideNext();
+                    } else if (index == 1) {
+                      swiper1?.slideNext();
+                    } else {
+                      swiper2?.slideNext();
+                    }
+                    }}>
                     <FaArrowCircleRight size={30} />
                   </button>
                 </div>

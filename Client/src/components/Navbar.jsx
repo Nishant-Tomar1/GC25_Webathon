@@ -40,6 +40,7 @@ export default function Navbar() {
       }
       toast.success("Logged Out Successfully")
       setLoading(false)
+      navigate("/");
     } catch (error) {
       console.log(error);
       setLoading(false)
