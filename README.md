@@ -45,7 +45,7 @@ Our Grocery Delivery App is built using the MERN stack, incorporating modern tec
 ### Setup Instructions
 
 1. **Clone the Repository**:
-git clone https://github.com/your-repo-url/grocery-delivery-app.git
+git clone https://github.com/Nishant-Tomar1/GC25_Webathon.git
 
 
 2. **Navigate to the Project Directory**:
