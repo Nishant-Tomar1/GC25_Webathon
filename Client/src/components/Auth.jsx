@@ -7,6 +7,7 @@ import {toast} from 'react-toastify'
 import {Server} from "../Constants"
 import axios from 'axios'
 import Loader from './Loader';
+import { useNavigate } from 'react-router-dom';
 
 function Auth() {
     const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ function Auth() {
     const [step , setStep] = useState(1);
     const dialogCtx = useDialog();
     const loginCtx = useLogin();
+    const navigate = useNavigate();
 
     const validateEmail = (email) => {
         
@@ -62,6 +64,10 @@ function Auth() {
                 toast.success(`Welcome ${res.data?.data?.user?.fullName}`);
                 dialogCtx.setDialog(false);
             }
+            console.log(res.data.data.user.role);
+            if (res.data.data.user.role === "seller") {
+              navigate(`/profile/${res.data.data.user._id}`);
+            }
             setLoading(false)
             
         } catch (error) {
@@ -87,7 +93,12 @@ function Auth() {
                 setEmail(res.data?.data?.loggedInUser?.email)
                 toast.success(`Welcome back, ${res.data?.data?.user?.fullName}`);
                 dialogCtx.setDialog(false);
+                console.log(res.data.data.user.role);
+                if (res.data.data.user.role === "seller") {
+                  navigate(`/profile/${res.data.data.user._id}`);
+                }
             }
+            
             setLoading(false)
             
         } catch (error) {
@@ -123,6 +134,9 @@ function Auth() {
                 toast.success("Profile created Successfully")
                 dialogCtx.setDialog(false);
                 LoginUser();
+            }
+            if (res.data.data.user.role == "seller") {
+              navigate(`/profile/${res.data.data.user._id}`);
             }
             setLoading(false)
             
