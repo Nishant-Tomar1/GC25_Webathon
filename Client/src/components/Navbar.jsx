@@ -200,13 +200,13 @@ export default function Navbar() {
 
                     {/* Cart */}
                     {(loginCtx.isLoggedIn) && (loginCtx.user?.role === "buyer") && <div className="ml-4 flow-root lg:ml-2">
-                      <a href={`/cart/${loginCtx.user?._id}`} className="group -m-2 flex items-center p-2">
+                      <Link to={`cart/${loginCtx.user?._id}`} className="group -m-2 flex items-center p-2">
                         <span className="text-2xl "><RiShoppingCartLine/></span>
                         <span className="ml-2 text-sm font-medium text-black group-hover:text-gray-800 hidden lg:block">
                           0
                         </span>
                         <span className="sr-only">items in cart, view bag</span>
-                      </a>
+                      </Link>
                     </div>}
 
                   </div>
