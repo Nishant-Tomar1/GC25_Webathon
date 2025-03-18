@@ -49,7 +49,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex h-screen fixed w-full z-60 mt-16 bg-gray-100 ">
+    <div className="flex h-screen fixed w-full mt-16 bg-gray-100 ">
       {/* Hamburger Button */}
       <button 
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
