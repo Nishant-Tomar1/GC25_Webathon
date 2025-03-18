@@ -1,10 +1,11 @@
 import axios from "axios";
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Server } from "../Constants";
 import { useLogin } from "../store/context/LoginContextProvider";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function ProductCard() {
     const location = useLocation()
@@ -131,9 +132,10 @@ function ProductCard() {
             🛡️ {product?.brand}
           </span>
           <span className="inline-block md:text-xl bg-gray-100 text-gray-700 px-2 py-1 mt-2 rounded-md">
-            🛒 {seller}
+            🛒 {seller} 
           </span>
         </div>
+          <span className="underline text-blue-600 text-sm font-semibold cursor-pointer" onClick={()=>{navigate(`/chats/${loginCtx.user?._id}/${product.seller}`)}}> <span>Any Queries? Message the seller</span> </span>
         <p className="text-gray-600 mt-2 p-2 md:text-lg">
           {product?.description}
         </p>

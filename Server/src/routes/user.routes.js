@@ -11,7 +11,8 @@ import {
     logoutUser,
     updateAccountDetails,
     updateUserProfilePicture,
-    verifyToken
+    verifyToken,
+    getCurrentUserChats
 } 
 from '../controllers/user.controller.js';
 
@@ -27,12 +28,12 @@ router.route("/verify-token").get(verifyToken);
 
 router.route("/getuserbyId/:UserID").get(getUserbyID);
 
-
 // //secured routes
 router.route('/logout').post( verifyJWT, logoutUser )
 
 router.route("/get-current-user").get( verifyJWT, getcurUserdetails )
 
+router.route('/currentuser-chats').get(verifyJWT, getCurrentUserChats);
 
 router.route("/update-user-account-details").patch( verifyJWT, updateAccountDetails )
 

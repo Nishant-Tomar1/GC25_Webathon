@@ -11,6 +11,8 @@ import axios from "axios"
 import { Server } from "./Constants"
 import { useLogin } from "./store/context/LoginContextProvider"
 import SearchResult from "./pages/SearchResult"
+import Chatpage from "./pages/Chatpage"
+import ChatBox from "./components/ChatBox"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +27,8 @@ const router = createBrowserRouter(
       <Route path="/manageproducts/:userId" element={<Dashboard/>} />
       <Route path="/managecoupons/:userId" element={<Dashboard/>} />
       <Route path="/search/:search" element={<SearchResult/>}/>
+      <Route path="/chats" element={<Chatpage/>}/>
+      <Route path="/chats/:user1/:user2" element={<ChatBox />} />
       <Route path="*" element={<ErrorPage />} />
     </Route>
   )

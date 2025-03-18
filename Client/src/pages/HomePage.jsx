@@ -66,7 +66,7 @@ function HomePage() {
   const [swiper, setSwiper] = useState(null);
   const [products, setProducts] = useState({});
   const [specialproducts, setSpecialproducts] = useState([]);
-  const Categories = ['Groceries','Home and Furniture','Stationary']
+  const Categories = ['Electronics and Appliances', 'Home and Furniture','Fashion and Beauty','Sports and Hobbies','Stationary','Groceries','Pharmacy']
 
   const fetchProductswithCategory = async (Category)=>{
     
@@ -114,7 +114,7 @@ function HomePage() {
           to="/search/all"
           className="absolute hidden md:right-80 font-semibold sm:block sm:bottom-46 sm:right-52 bg-white text-orange-500 text-bold px-5 py-3 rounded shadow-xl transition-all"
         >
-          Get your Groceries now
+          Get the best deals now !!
         </Link>
         <div className="sm:hidden relative -right-38 w-36 top-26"><img src={logo} alt="" /></div>
       </div>

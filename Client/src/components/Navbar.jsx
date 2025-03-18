@@ -144,7 +144,7 @@ export default function Navbar() {
                             <ul className="text-sm text-gray-600 space-y-2 flex flex-col pb-1">
                               <li> <Link to={`/profile/${loginCtx.user?._id}`} onClick={()=>{setMenu(false)}} >My Profile</Link>  </li>
                               { (loginCtx.user?.role === "buyer") && <li> <Link to={`/orders/${loginCtx.user?._id}`} onClick={()=>{setMenu(false)}} >My Orders</Link>  </li>}
-                              <li> <Link to={`/chats/${loginCtx.user?._id}`} onClick={()=>{setMenu(false)}}>My Chats</Link>  </li>
+                              <li> <Link to={`/chats`} onClick={()=>{setMenu(false)}}>My Chats</Link>  </li>
                             </ul>
                             <button onClick={logoutHandler} className="text-red-600 cursor-pointer text-md font-semibold">{loading ? "loading.." : "Logout"}</button>
                           </div>

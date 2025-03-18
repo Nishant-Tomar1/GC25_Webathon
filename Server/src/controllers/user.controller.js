@@ -6,6 +6,9 @@ import { sendmail } from './../utils/mails/verifymail.js'
 import { LoginOTP } from './../models/loginotp.js'
 import jwt from "jsonwebtoken"
 import { uploadOnCloudinary, deleteFileFromCloudinary } from "../utils/cloudinary.js"
+import { Message} from "../models/message.model.js"
+import mongoose from "mongoose"
+
 const generateTokens = async (userId) => {
     try {
 
@@ -221,6 +224,77 @@ const getUserbyID = asyncHandler(
     }
 )
 
+const getCurrentUserChats = asyncHandler(
+    async(req, res) => {
+        const chats = await Message.aggregate([
+            {
+                $match : {
+                    $or : [
+                        {sender : req.user._id},
+                        {receiver : req.user._id}
+                    ]
+                }
+            },
+            {
+                $sort : {
+                    timeStamp : -1
+                }
+            }
+        ])
+        // console.log(chats);
+
+        const users = []
+        chats.map((chat) => {
+            if(String(chat.sender) === String(req.user._id)){
+                if(!users.includes(String(chat.receiver))){
+                    users.push(String(chat.receiver));
+                };
+            } 
+            else{
+                if(!users.includes(String(chat.sender))){
+                    users.push(String(chat.sender));
+                };
+            }
+        })
+
+        let data = [], lastMessages = [];
+        const userPromises = users.map(async (user) => {
+            return await User.findById(user).select("fullName profilePicture");
+        });
+        
+        data = await Promise.all(userPromises);
+        
+        const messagePromise = data.map(async (user) => {
+            // console.log(user);
+            return await Message.aggregate([
+                {
+                    $match : {
+                        $or : [
+                            {sender : req.user._id, receiver : new mongoose.Types.ObjectId(user._id) },
+                            {receiver : req.user._id, sender : new mongoose.Types.ObjectId(user._id) }
+                        ]
+                    }
+                },
+                {
+                    $sort : {
+                        timeStamp : -1
+                    }
+                }
+            ]).limit(1)
+        })
+
+        lastMessages = await Promise.all(messagePromise)
+
+        // console.log(lastMessages);
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse (200,{data : data, lastMessages : lastMessages}, "Chats fetched successfully")
+        )
+    }
+)
+
 const updateAccountDetails = asyncHandler(
     async (req, res) => {
         const { fullName, email, contactNumber,address } = req.body;
@@ -365,5 +439,6 @@ export {
     logoutUser,
     updateAccountDetails,
     updateUserProfilePicture,
-    verifyToken
+    verifyToken,
+    getCurrentUserChats
 }
