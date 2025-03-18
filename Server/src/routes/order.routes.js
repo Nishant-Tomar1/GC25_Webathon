@@ -10,15 +10,5 @@ router.route("/create-order").post(verifyJWT,addOrderbyuser);
 
 router.route("/get-buyer-order").get(verifyJWT,getorderbyId);
 router.route("/get-seller-order").get(verifyJWT,getorderbyIdseller);
-// router.route('/addproductimages/:prodID').patch(
-//     verifyJWT,
-//     uploadProductImages,
-//     addProductImage
-// )
-
-// router.route("/getproducts").get(getProducts)
-
-// router.route("/updateproductdetails/:prodID").patch(verifyJWT,updateProductDetails)
-
 
 export default router

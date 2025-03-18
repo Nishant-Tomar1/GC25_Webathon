@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState  } from "react";
 import axios from "axios";
 import { Server } from "../Constants.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiSquarePlus } from "react-icons/ci";
 import { CiSquareMinus } from "react-icons/ci";
+import { loginContext } from "../store/context/LoginContextProvider.jsx";
 function Cart() {
   const [carts, setCarts] = useState([
     {
@@ -74,9 +75,9 @@ function Cart() {
 
   const onPayment = async (price) => {
     try {
-
+      let finalamount = (finalprice*1.15).toFixed(2);
       const { data } = await axios.post(`${Server}/payment/create-order`, {
-        amount: finalprice,
+        amount: finalamount,
       },
       {
         headers: {
@@ -109,23 +110,19 @@ function Cart() {
           },
           {
             headers: {
-              Authorization: "Bearer" + localStorage.getItem("Token"),
+              Authorization: "Bearer " + localStorage.getItem("Token"),
             },
           }
         );
-
+        useNavigate(`/orders/${loginContext.user._id}`);
           if (verifyResponse.data.success) {
             // alert("Payment Successful!");
             
-            navigate("/");
+            
           } else {
-            alert("Payment verification failed");
+            // alert("Payment verification failed");
           }
         },
-        // prefill: {
-        //   name: username,
-        //   email: emailid,
-        // },
         theme: {
           color: "#3399cc",
         },
@@ -133,6 +130,18 @@ function Cart() {
       
       const razorpay = new window.Razorpay(options);
       razorpay.open();
+      try{
+        const res = await axios.post(`${Server}/order/create-order`,{
+          cartarray : carts
+        }, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("Token"),
+          },
+        });
+      }
+      catch(error){
+        console.log(error)
+      }
     } catch (err) {
       console.error(err);
       alert("Error occurred while initiating payment. Please try again.");

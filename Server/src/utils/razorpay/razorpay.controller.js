@@ -59,6 +59,7 @@ const verifyPaymentRequest = async (req,res) => {
 
     if(expectedSignature === signature){
         //process the payment here
+        
         console.log(req.user)
         return res.status(200).json({
             message: "Payment successful",
