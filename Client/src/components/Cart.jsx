@@ -160,10 +160,10 @@ function Cart() {
             Shopping Cart
           </h2>
 
-          <div className="mt-4 sm:mt-8 md:gap-4 lg:flex lg:items-start xl:gap-8">
+          {carts.length > 0 &&<div className="mt-4 sm:mt-8 md:gap-4 lg:flex lg:items-start xl:gap-8">
             <div className="mx-auto w-2/3 flex-none lg:max-w-2xl xl:max-w-4xl">
               <div className="space-y-6">
-                {carts.map((cart, index) => (
+                { carts.map((cart, index) => (
                   <div
                     key={index}
                     className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 md:p-6"
@@ -354,7 +354,7 @@ function Cart() {
                 </form>
               </div>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </>

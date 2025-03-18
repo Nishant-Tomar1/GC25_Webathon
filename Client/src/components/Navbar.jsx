@@ -108,7 +108,7 @@ export default function Navbar() {
               } */}
 
               <div className="w-full flex items-center justify-end lg:gap-2 ps-2">
-                    <form  onSubmit={(e)=>{e.preventDefault();handleSearch(search)}}>
+                   {!(loginCtx.user?.role === "seller") && <form  onSubmit={(e)=>{e.preventDefault();handleSearch(search)}}>
                   <div className="flex rounded-md lg:ml-6 border-2 mr-3 border-black-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
                     <input
                       value={search}
@@ -123,7 +123,7 @@ export default function Navbar() {
                       <FaSearch />
                     </button>
                   </div>
-                    </form>
+                    </form>}
 
                    {/* Desktop */}
                 {loginCtx.isLoggedIn && 

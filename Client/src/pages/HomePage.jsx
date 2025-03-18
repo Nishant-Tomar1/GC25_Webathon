@@ -1,6 +1,6 @@
 import {React,useEffect,useState} from "react";
 import ProductCard from "../components/ProductCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 import logo from  "../assets/logo.png"
 import axios from "axios";
 import { Server } from "../Constants";
+import { useLogin } from "../store/context/LoginContextProvider";
 
 // const products = [
 //   {
@@ -68,8 +69,9 @@ function HomePage() {
   const [swiper2, setSwiper2] = useState(null);
   const [products, setProducts] = useState({});
   const [specialproducts, setSpecialproducts] = useState([]);
-  const Categories = ['Electronics and Appliances', 'Home and Furniture','Fashion and Beauty','Sports and Hobbies','Stationary','Groceries','Pharmacy']
-
+  const Categories = ['Fashion and Beauty','Sports and Hobbies','Stationary','Groceries','Pharmacy']
+  const loginCtx = useLogin(); 
+  const navigate = useNavigate();
   const fetchProductswithCategory = async (Category)=>{
     
     try {
@@ -101,11 +103,14 @@ function HomePage() {
   }
 
   useEffect(()=>{
+    if(loginCtx.user.role==="seller"){
+      navigate(`/profile/${loginCtx.user._id}`);
+     }
     for (let i in Categories){
       fetchProductswithCategory(Categories[i]);
     }
     fetchSpecialProducts();
-  },[])
+  },[loginCtx.user?._id])
 
 
 
