@@ -2,7 +2,7 @@ import { Route } from "react-router-dom"
 import Layout from "./layout/Layout"
 import HomePage from "./pages/HomePage"
 import { RouterProvider } from "react-router-dom"
-import { createBrowserRouter, createRoutesFromElements } from "react-router-dom"
+import { createHashRouter, createRoutesFromElements } from "react-router-dom"
 import ErrorPage from "./pages/ErrorPage"
 import ProductPage from "./pages/productPage"
 import Dashboard from "./pages/Dashboard"
@@ -14,7 +14,7 @@ import SearchResult from "./pages/SearchResult"
 import Chatpage from "./pages/Chatpage"
 import ChatBox from "./components/ChatBox"
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route index element={<HomePage />} />
