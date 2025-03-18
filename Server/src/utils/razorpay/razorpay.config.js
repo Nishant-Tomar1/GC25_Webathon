@@ -5,9 +5,12 @@ dotenv.config({
     path : '.env'
 })
 
-exports.razorpayinstance = () => {
+const razorpayinstance = () => {
     return new razorpay({
         key_id: process.env.razorpay_key_id,
         key_secret: process.env.razorpay_key_secret,
     });
 } 
+export{
+    razorpayinstance
+}

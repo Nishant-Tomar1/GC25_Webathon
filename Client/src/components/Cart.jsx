@@ -4,7 +4,6 @@ import { Server } from "../Constants.jsx";
 import { Link } from "react-router-dom";
 import { CiSquarePlus } from "react-icons/ci";
 import { CiSquareMinus } from "react-icons/ci";
-
 function Cart() {
   const [carts, setCarts] = useState([
     {
@@ -47,26 +46,112 @@ function Cart() {
 
   const handleRemove = async (id) => {
     try {
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleCheckout = async () => {
-    try {
       const res = await axios.delete(`${Server}/cart/remove-item/${id}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Token"),
         },
       });
+      fetchData();
     } catch (error) {
       console.log(error);
     }
   };
 
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        console.error(`Error loading script ${src}`);
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  const onPayment = async (price) => {
+    try {
+
+      const { data } = await axios.post(`${Server}/payment/create-order`, {
+        amount: finalprice,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("Token"),
+        },
+      }
+    );
+    console.log(data);
+
+      if (!data.success) {
+        throw new Error("Failed to create order");
+      }
+
+      const { amount, id, currency } = data.order;
+      
+      const options = {
+        key: "rzp_test_kFSkTbEbfHlrVy",
+        amount,
+        currency,
+        name: "Checkout order",
+        description: "Order summary",
+        id,
+        handler: async (response) => {
+          const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+
+          const verifyResponse = await axios.post(`${Server}/payment/verify-payment`, {
+            payment_id: razorpay_payment_id,
+            order_id: razorpay_order_id,
+            signature: razorpay_signature,
+          },
+          {
+            headers: {
+              Authorization: "Bearer" + localStorage.getItem("Token"),
+            },
+          }
+        );
+
+          if (verifyResponse.data.success) {
+            // alert("Payment Successful!");
+            
+            navigate("/");
+          } else {
+            alert("Payment verification failed");
+          }
+        },
+        // prefill: {
+        //   name: username,
+        //   email: emailid,
+        // },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred while initiating payment. Please try again.");
+    }
+  };
+
+
+
+
+
   useEffect(() => {
     fetchData();
+    loadScript("https://checkout.razorpay.com/v1/checkout.js");
   }, []);
+
+  const checkout = (price) => {
+    onPayment(price);
+  };
+
   return (
     <>
       <div className="bg-white p-8 antialiased md:py-10">
@@ -149,7 +234,7 @@ function Cart() {
                               handleRemove(cart.product._id);
                             }}
                             type="button"
-                            className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
+                            className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
                           >
                             Remove
                           </button>
@@ -221,8 +306,8 @@ function Cart() {
                 </div>
 
                 <button
-                  onClick={handleCheckout}
-                  className="flex w-full items-center border justify-center hover:bg-gray-700 hover:text-white rounded-lg px-5 py-2.5 text-sm font-medium"
+                  onClick={checkout}
+                  className="flex w-full items-center border justify-center hover:bg-gray-700 hover:text-white rounded-lg px-5 py-2.5 text-sm font-medium cursor-pointer"
                 >
                   Checkout
                 </button>
@@ -262,7 +347,7 @@ function Cart() {
                   </div>
                   <button
                     type="submit"
-                    className="flex w-full items-center border justify-center rounded-lg px-5 py-2.5 text-sm font-medium"
+                    className="flex w-full items-center border justify-center rounded-lg px-5 py-2.5 text-sm font-medium cursor-pointer"
                   >
                     Apply Code
                   </button>

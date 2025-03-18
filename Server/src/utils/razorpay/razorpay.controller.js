@@ -1,13 +1,18 @@
-import razorpayinstance from './razorpay.config'
-const dotenv = require("dotenv");
-dotenv.config({ path: "./../../config.env" }); 
-const crypto = require("crypto");
-const { request } = require('http');
+import {razorpayinstance} from './razorpay.config.js'
+import dotenv from "dotenv"
+// const dotenv = require("dotenv");
+dotenv.config({
+    path : '.env'
+})
+import crypto from "crypto"
+// const crypto = require("crypto");
+// const { request } = require('http');
+import {request} from "http"
 const Razorpaypaymentistant = razorpayinstance();
 
-exports.createOrder = async (req,res) =>{
+const createOrder = async (req,res) =>{
     console.log(req.body);
-    const { amount } = req.body.amount;
+    const { amount } = req.body;
     const option = {
         amount : amount*100,
         currency : "INR",
@@ -40,7 +45,7 @@ exports.createOrder = async (req,res) =>{
 }
 
 
-exports.verifyPaymentRequest = async (req,res) => {
+const verifyPaymentRequest = async (req,res) => {
     const {payment_id, order_id, signature } = req.body;
     // const payment_response = await Razorpaypaymentistant.payments.fetch(razorpay_payment_id);
 
@@ -66,4 +71,10 @@ exports.verifyPaymentRequest = async (req,res) => {
             success: false
         });
     }
+}
+
+
+export {
+    createOrder,
+    verifyPaymentRequest
 }
