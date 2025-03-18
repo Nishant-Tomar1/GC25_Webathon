@@ -80,11 +80,11 @@ const Dashboard = () => {
               <Link className={`flex items-center gap-5 w-full justify-between py-2 px-4 rounded-lg ${path==="manageproducts" && "bg-gray-200"}`} to={`/manageproducts/${loginCtx.user?._id}`}  > Manage Products  <FaShoppingBag/> </Link>
 
               <Link className={`flex items-center gap-5 w-full justify-between py-2 px-4 rounded-lg ${path==="managecoupons" && "bg-gray-200"}`} to={`/managecoupons/${loginCtx.user?._id}`}  > Manage Coupons  <BiSolidOffer/> </Link>
-            <Link className={`flex items-center gap-5 w-full justify-between py-2 px-8 rounded-lg ${path==="notifications" && "bg-gray-200"}`} to={`/notifications/${loginCtx.user?._id}`}  > Notifications <FaBell/> </Link>
 
             </>
 
           }
+<Link className={`flex items-center gap-5 w-full justify-between py-2 px-8 rounded-lg ${path==="notifications" && "bg-gray-200"}`} to={`/notifications/${loginCtx.user?._id}`}  > Notifications <FaBell/> </Link>
           
 
           <button className='flex font-semibold text-lg gap-2 left-10 items-center absolute bottom-5 text-red-600' onClick={logoutHandler}>{loading ? "Loading.." : <> Sign Out <IoMdExit/> </> }</button>
